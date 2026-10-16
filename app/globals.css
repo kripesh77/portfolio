@@ -75,6 +75,7 @@ img {
   width: 100%;
   height: 100svh;
   overflow-y: auto;
+  background-color: var(--bg);
 }
 
 .projects-container {
@@ -129,36 +130,55 @@ img {
 }
 
 ::view-transition-old(.page-exit) {
-  animation: 1600ms cubic-bezier(0.65, 0, 0.35, 1) both page-out;
+  animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
 }
 
 ::view-transition-new(.page-enter) {
-  animation: 1500ms cubic-bezier(0.65, 0, 0.35, 1) both page-in;
-  animation-delay: 0.25s;
+  animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
 }
-
+/* 
+# first version
 @keyframes page-out {
-  0% {
-    transform: translateX(0%) translateY(0%) rotate(0deg) scale(1);
+  from {
+    transform: translateY(0%);
     opacity: 1;
   }
-  40% {
-    transform: translateX(0%) translateY(0%) rotate(0deg) scale(0.8);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateX(-50%) translateY(20%) rotate(-10deg) scale(0.65);
+  to {
+    transform: translateY(-25%);
     opacity: 0.25;
   }
 }
 
 @keyframes page-in {
   from {
-    transform: translateX(100%) translateY(20%);
-    clip-path: polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%);
+    transform: translateY(25%);
+    clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
   }
   to {
-    transform: translateX(0%) translateY(0%);
+    transform: translateY(0%);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+ */
+
+@keyframes page-out {
+  from {
+    transform: translateY(0%) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-25%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    transform: translateY(40%);
+    clip-path: polygon(35% 50%, 65% 50%, 65% 50%, 35% 50%);
+  }
+  to {
+    transform: translateY(0%);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
 }

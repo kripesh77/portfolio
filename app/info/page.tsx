@@ -17,15 +17,19 @@ export default function Info() {
       linesClass: "line",
     });
 
-    gsap.set(".line", { y: 400 });
-
-    gsap.to(".line", {
-      y: 0,
-      duration: 2,
-      stagger: 0.1,
-      ease: "power4.out",
-      delay: 0.5,
-    });
+    gsap.fromTo(
+      ".line",
+      { y: 400 },
+      {
+        y: 0,
+        duration: 1.3,
+        stagger: 0.1,
+        ease: "power4.out",
+        onComplete: () => {
+          split.revert();
+        },
+      },
+    );
   });
 
   return (

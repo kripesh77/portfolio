@@ -13,15 +13,23 @@ export default function Home() {
         type: "chars",
         mask: "chars",
       });
-      gsap.set(heroText.chars, { y: 400 });
 
-      gsap.to(heroText.chars, {
-        y: 0,
-        duration: 1,
-        stagger: 0.075,
-        ease: "power3.out",
-        delay: 1.125,
-      });
+      gsap.fromTo(
+        heroText.chars,
+        {
+          y: 400,
+        },
+        {
+          y: 0,
+          duration: 1,
+          stagger: 0.06,
+          ease: "power3.out",
+          delay: 0.4,
+          onComplete: () => {
+            heroText.revert();
+          },
+        },
+      );
     },
     { scope: container },
   );
