@@ -36,11 +36,13 @@ export default function Home() {
     { scope: container },
   );
   return (
-    <div className="home" ref={container}>
-      <h1>
-        <span>Kripesh</span>
-        <span>Ghimire</span>
-      </h1>
-    </div>
+    <>
+      <div className="home" ref={container}>
+        <h1>
+          <span>Kripesh</span>
+          <span>Ghimire</span>
+        </h1>
+      </div>
+    </>
   );
 }

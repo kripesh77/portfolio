@@ -19,7 +19,7 @@
 
 body {
   font-family: "PP Neue Montreal";
-  background-color: #000;
+  background-color: var(--fg);
   color: var(--fg);
 }
 
@@ -34,7 +34,8 @@ img {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  z-index: 2;
+  z-index: 9999;
+  isolation: auto;
 }
 
 .navbar-items {
@@ -43,20 +44,31 @@ img {
 }
 
 .navbar-item {
-  padding: 1.5rem;
+  padding: 0.5rem;
+  @media (min-width: 1000px) {
+    padding: 1.25rem;
+  }
 }
 
 .hamburger {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   background-color: var(--fg);
+  overflow: visible;
   color: var(--bg);
   cursor: pointer;
+  height: 3.125rem;
 
   @media (min-width: 1000px) {
     width: calc((100vw - 13.125rem) * 3 / 20 + 2.5rem);
-    height: 3.125rem;
+  }
+
+  @media (640px < width < 1000px) {
+    width: 33vw;
+  }
+
+  @media (width < 640px) {
+    width: 50vw;
   }
 }
 
@@ -69,11 +81,20 @@ img {
 
   background-color: var(--brand);
   clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: clip-path 0.1s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-.hamburger:hover::before {
-  clip-path: inset(0);
+@media (hover: hover) and (pointer: fine) {
+  .hamburger:hover::before {
+    clip-path: inset(0);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hamburger:hover svg {
+      color: var(--fg);
+      pointer-events: none;
+    }
+  }
 }
 
 .hamburger > * {
@@ -86,20 +107,38 @@ img {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateY(-50%);
+  transform: translate(-10%, -50%);
   z-index: 1;
   color: var(--bg);
-  transition: color 0.2s ease;
-}
-
-.hamburger:hover svg {
-  color: var(--fg);
-  pointer-events: none;
+  transition: color 0.1s ease;
 }
 
 .navbar svg {
-  width: clamp(40px, 10vw, 150px);
+  width: clamp(80px, 10vw, 150px);
   aspect-ratio: 53/23;
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .logo {
+  width: clamp(80px, 10vw, 150px);
+  aspect-ratio: 53/23;
+  mix-blend-mode: difference;
+}
+
+.navcontent {
+  height: 70vh;
+  color: var(--bg);
+  font-size: 10vw;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  z-index: -1;
+  position: absolute;
+  width: 100svw;
 }
 
 .home {

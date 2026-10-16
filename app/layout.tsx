@@ -3,6 +3,7 @@ import "lenis/dist/lenis.css";
 import ReactLenis from "lenis/react";
 import Navbar from "@/components/NavBar";
 import ViewTransitionsWrapper from "@/components/ViewTransitionsWrapper";
+import NavContent from "@/components/NavContent";
 
 export default function RootLayout({
   children,
@@ -13,7 +14,8 @@ export default function RootLayout({
         <ViewTransitionsWrapper>
           <ReactLenis root />
           <Navbar />
-          {children}
+          <NavContent />
+          <main>{children}</main>
         </ViewTransitionsWrapper>
       </body>
     </html>
