@@ -23,10 +23,11 @@ export default function Info() {
       {
         y: 0,
         duration: 1.3,
+        delay: 0.3,
         stagger: 0.1,
-        ease: "power4.out",
+        ease: "power3.out",
         onComplete: () => {
-          split.revert();
+          // split.revert();
         },
       },
     );

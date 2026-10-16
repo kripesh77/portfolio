@@ -14,6 +14,8 @@ export default function Home() {
         mask: "chars",
       });
 
+      gsap.set(heroText.chars, { y: 400 });
+
       gsap.fromTo(
         heroText.chars,
         {
@@ -35,7 +37,10 @@ export default function Home() {
   );
   return (
     <div className="home" ref={container}>
-      <h1>Kripesh</h1>
+      <h1>
+        <span>Kripesh</span>
+        <span>Ghimire</span>
+      </h1>
     </div>
   );
 }

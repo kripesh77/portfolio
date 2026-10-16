@@ -1,23 +1,19 @@
-import { Link } from "next-view-transitions";
+import Hamburger from "./Hamburger";
+import Logo from "./Logo";
+import NoSameRouteTransitionLink from "./NoSameRouteTransitionLink";
 
 const Navbar = () => {
   return (
     <nav className="navbar" style={{ viewTransitionName: "navbar" }}>
       <div className="navbar-logo">
         <div className="navbar-item">
-          <Link href="/">Kripesh</Link>
+          <NoSameRouteTransitionLink href="/">
+            <Logo />
+          </NoSameRouteTransitionLink>
         </div>
       </div>
-      <div className="navbar-items">
-        <div className="navbar-item">
-          <Link href="/">Home</Link>
-        </div>
-        <div className="navbar-item">
-          <Link href="/projects">Projects</Link>
-        </div>
-        <div className="navbar-item">
-          <Link href="/info">Info</Link>
-        </div>
+      <div className="hamburger">
+        <Hamburger />
       </div>
     </nav>
   );
