@@ -129,11 +129,11 @@ img {
   z-index: 100;
 }
 
-::view-transition-old(.page-exit) {
+::view-transition-old(root) {
   animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
 }
 
-::view-transition-new(.page-enter) {
+::view-transition-new(root) {
   animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
 }
 /* 

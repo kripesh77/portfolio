@@ -2,7 +2,7 @@ import "./globals.css";
 import "lenis/dist/lenis.css";
 import ReactLenis from "lenis/react";
 import Navbar from "@/components/NavBar";
-import { ViewTransition } from "react";
+import ViewTransitionsWrapper from "@/components/ViewTransitionsWrapper";
 
 export default function RootLayout({
   children,
@@ -10,11 +10,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-full">
-        <ViewTransition enter="page-enter" exit="page-exit" default="none">
+        <ViewTransitionsWrapper>
           <ReactLenis root />
           <Navbar />
           {children}
-        </ViewTransition>
+        </ViewTransitionsWrapper>
       </body>
     </html>
   );
