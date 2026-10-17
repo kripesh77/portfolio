@@ -3,15 +3,21 @@
 import "./globals.css";
 import "lenis/dist/lenis.css";
 import { ReactLenis } from "lenis/react";
+import { useEffect } from "react";
 import Navbar from "@/components/NavBar";
 import ViewTransitionsWrapper from "@/components/ViewTransitionsWrapper";
 import NavContent from "@/components/NavContent";
 import Logo from "@/components/Logo";
 import NoSameRouteTransitionLink from "@/components/NoSameRouteTransitionLink";
+import ScrollReset from "@/components/ScrollReset";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  useEffect(() => {
+    history.scrollRestoration = "manual";
+  }, []);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-full">
@@ -33,6 +39,7 @@ export default function RootLayout({
 
           <div className="main-shell">
             <ReactLenis className="main-scroll">
+              <ScrollReset />
               <main>{children}</main>
             </ReactLenis>
           </div>
