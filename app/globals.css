@@ -9,7 +9,7 @@
 
 html,
 body {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 * {
@@ -38,16 +38,7 @@ img {
   background-color: var(--brand);
 }
 
-.main-shell {
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-}
-
-.main-scroll {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
+#smooth-content {
   background-color: var(--bg);
 }
 

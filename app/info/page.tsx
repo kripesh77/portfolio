@@ -23,7 +23,7 @@ export default function Info() {
       {
         y: 0,
         duration: 1.3,
-        delay: 0.3,
+        delay: 0.1,
         stagger: 0.1,
         ease: "power3.out",
         onComplete: () => {

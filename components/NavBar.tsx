@@ -42,7 +42,7 @@ const Navbar = () => {
           0,
         )
         .to(
-          ".main-shell",
+          "#smooth-wrapper",
           {
             scale: 0.9,
             borderRadius: "24px",

@@ -1,8 +1,9 @@
 "use client";
 
 import "./globals.css";
-import "lenis/dist/lenis.css";
-import { ReactLenis } from "lenis/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useEffect } from "react";
 import Navbar from "@/components/NavBar";
 import ViewTransitionsWrapper from "@/components/ViewTransitionsWrapper";
@@ -11,11 +12,15 @@ import Logo from "@/components/Logo";
 import NoSameRouteTransitionLink from "@/components/NoSameRouteTransitionLink";
 import ScrollReset from "@/components/ScrollReset";
 
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   useEffect(() => {
     history.scrollRestoration = "manual";
+    const smoother = ScrollSmoother.create({ smooth: 1 });
+    return () => smoother.kill();
   }, []);
 
   return (
@@ -37,11 +42,11 @@ export default function RootLayout({
           <Navbar />
           <NavContent />
 
-          <div className="main-shell">
-            <ReactLenis className="main-scroll">
+          <div id="smooth-wrapper">
+            <div id="smooth-content">
               <ScrollReset />
               <main>{children}</main>
-            </ReactLenis>
+            </div>
           </div>
         </ViewTransitionsWrapper>
       </body>
