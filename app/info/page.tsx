@@ -34,21 +34,20 @@ export default function Info() {
   });
 
   return (
-    <div className="info" ref={container}>
-      <div className="col">
-        <img
-          src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e"
-          alt=""
-        />
+    <div>
+      <div className="info" ref={container}>
+        <div className="col"></div>
+        <div className="col">
+          <p>
+            Kaelon is a portrait photographer who captures striking and artistic
+            images. His work focuses on light, shadow, and movement, creating
+            portraits that feel both modern and timeless. With a minimal and
+            moody style, he brings out raw emotion and unique beauty in every
+            subject.
+          </p>
+        </div>
       </div>
-      <div className="col">
-        <p>
-          Kaelon is a portrait photographer who captures striking and artistic
-          images. His work focuses on light, shadow, and movement, creating
-          portraits that feel both modern and timeless. With a minimal and moody
-          style, he brings out raw emotion and unique beauty in every subject.
-        </p>
-      </div>
+      <div className="h-dvh"></div>
     </div>
   );
 }

@@ -1,9 +1,13 @@
+"use client";
+
 import "./globals.css";
 import "lenis/dist/lenis.css";
-import ReactLenis from "lenis/react";
+import { ReactLenis } from "lenis/react";
 import Navbar from "@/components/NavBar";
 import ViewTransitionsWrapper from "@/components/ViewTransitionsWrapper";
 import NavContent from "@/components/NavContent";
+import Logo from "@/components/Logo";
+import NoSameRouteTransitionLink from "@/components/NoSameRouteTransitionLink";
 
 export default function RootLayout({
   children,
@@ -12,10 +16,26 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-full">
         <ViewTransitionsWrapper>
-          <ReactLenis root />
+          <div className="logo-overlay">
+            <div className="logo-blend">
+              <NoSameRouteTransitionLink
+                href="/"
+                className="logo-link"
+                aria-label="Home"
+              >
+                <Logo />
+              </NoSameRouteTransitionLink>
+            </div>
+          </div>
+
           <Navbar />
           <NavContent />
-          <main>{children}</main>
+
+          <div className="main-shell">
+            <ReactLenis className="main-scroll">
+              <main>{children}</main>
+            </ReactLenis>
+          </div>
         </ViewTransitionsWrapper>
       </body>
     </html>

@@ -3,8 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import Hamburger from "./Hamburger";
-import Logo from "./Logo";
-import NoSameRouteTransitionLink from "./NoSameRouteTransitionLink";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {
@@ -23,6 +21,7 @@ const Navbar = () => {
 
   function closeMenu() {
     timeline.current?.reverse();
+    isOpenRef.current = false;
     setIsOpen(false);
   }
 
@@ -33,16 +32,21 @@ const Navbar = () => {
       timeline.current
         .fromTo(
           ".navcontent",
-          { y: "-100vh", zIndex: -1 },
-          { y: 0, zIndex: 999, duration: 0.5, ease: "power2.inOut" },
+          { y: "-100%", zIndex: -1 },
+          {
+            y: 0,
+            zIndex: 999,
+            duration: 0.5,
+            ease: "power2.inOut",
+          },
           0,
         )
         .to(
-          "main",
+          ".main-shell",
           {
             scale: 0.9,
             borderRadius: "24px",
-            y: "70vh",
+            y: "40vh",
             duration: 0.5,
             ease: "power2.inOut",
           },
@@ -50,7 +54,7 @@ const Navbar = () => {
         );
     }
 
-    if (isOpen) {
+    if (isOpenRef.current) {
       timeline.current.reverse();
     } else {
       timeline.current.play();
@@ -61,15 +65,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="navbar" style={{ viewTransitionName: "navbar" }}>
-      <div className="navbar-logo">
-        <div className="navbar-item logo">
-          <NoSameRouteTransitionLink href="/" onNavigate={closeMenu}>
-            <Logo />
-          </NoSameRouteTransitionLink>
-        </div>
-      </div>
-
+    <nav className="navbar">
       <button
         type="button"
         className="hamburger"

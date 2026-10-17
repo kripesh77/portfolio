@@ -3,8 +3,13 @@
 
 :root {
   --bg: #fff;
-  --fg: #1a1a1a;
+  --fg: #000;
   --brand: #d3fd50;
+}
+
+html,
+body {
+  overflow: hidden;
 }
 
 * {
@@ -18,7 +23,7 @@
 }
 
 body {
-  font-family: "PP Neue Montreal";
+  font-family: "PP Neue Montreal", sans-serif;
   background-color: var(--fg);
   color: var(--fg);
 }
@@ -29,13 +34,35 @@ img {
   object-fit: cover;
 }
 
+::selection {
+  background-color: var(--brand);
+}
+
+.main-shell {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.main-scroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--bg);
+}
+
 .navbar {
   position: fixed;
+  inset: 0 0 auto;
   width: 100%;
   display: flex;
   justify-content: space-between;
   z-index: 9999;
   isolation: auto;
+}
+
+.navbar .hamburger {
+  margin-left: auto;
 }
 
 .navbar-items {
@@ -45,9 +72,38 @@ img {
 
 .navbar-item {
   padding: 0.5rem;
-  @media (min-width: 1000px) {
+}
+
+@media (min-width: 1000px) {
+  .navbar-item {
     padding: 1.25rem;
   }
+}
+
+.logo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  width: clamp(80px, 10vw, 150px);
+  aspect-ratio: 53 / 28;
+  padding: 0.5rem;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.logo-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.logo-link svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: white;
 }
 
 .hamburger {
@@ -58,16 +114,24 @@ img {
   color: var(--bg);
   cursor: pointer;
   height: 3.125rem;
+  border: none;
+  pointer-events: auto;
+}
 
-  @media (min-width: 1000px) {
+@media (min-width: 1000px) {
+  .hamburger {
     width: calc((100vw - 13.125rem) * 3 / 20 + 2.5rem);
   }
+}
 
-  @media (640px < width < 1000px) {
+@media (min-width: 640px) and (max-width: 999.98px) {
+  .hamburger {
     width: 33vw;
   }
+}
 
-  @media (width < 640px) {
+@media (max-width: 639.98px) {
+  .hamburger {
     width: 50vw;
   }
 }
@@ -78,23 +142,9 @@ img {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-
   background-color: var(--brand);
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.1s cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hamburger:hover::before {
-    clip-path: inset(0);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hamburger:hover svg {
-      color: var(--fg);
-      pointer-events: none;
-    }
-  }
 }
 
 .hamburger > * {
@@ -113,37 +163,41 @@ img {
   transition: color 0.1s ease;
 }
 
-.navbar svg {
-  width: clamp(80px, 10vw, 150px);
-  aspect-ratio: 53/23;
-}
+@media (hover: hover) and (pointer: fine) {
+  .hamburger:hover::before {
+    clip-path: inset(0);
+  }
 
-.navbar .logo {
-  display: flex;
-  align-items: center;
-}
-
-.navbar .logo {
-  width: clamp(80px, 10vw, 150px);
-  aspect-ratio: 53/23;
-  mix-blend-mode: difference;
+  .hamburger:hover svg {
+    color: var(--fg);
+  }
 }
 
 .navcontent {
-  height: 70vh;
-  color: var(--bg);
-  font-size: 10vw;
-  font-weight: 800;
-  display: grid;
-  place-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: -1;
-  position: absolute;
-  width: 100svw;
+  width: 100%;
+  height: 40vh;
+  padding-inline: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  color: var(--bg);
+  font-size: clamp(2rem, 5vw, 5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.navcontent > div {
+  display: flex;
+  gap: 10vw;
 }
 
 .home {
   width: 100%;
-  height: 100svh;
+  height: 100dvh;
   background-color: var(--bg);
   display: grid;
   place-items: center;
@@ -151,23 +205,19 @@ img {
 
 .home h1 {
   width: 100%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-transform: uppercase;
-  color: var(--fg);
-  font-size: 15vw;
-  font-weight: bolder;
-  line-height: 1;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
   display: flex;
   flex-direction: column;
+  color: var(--fg);
+  font-size: 20vw;
+  font-weight: bolder;
+  line-height: 1;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .home h1 > span {
-  padding-inline: 0.5vw;
   display: inline-block;
+  padding-inline: 0.5vw;
   text-align: start;
 }
 
@@ -175,18 +225,11 @@ img {
   text-align: end;
 }
 
-.projects {
-  width: 100%;
-  height: 100svh;
-  overflow-y: auto;
-  background-color: var(--bg);
-}
-
 .projects-container {
   width: 100%;
-  min-height: 100svh;
-  background-color: var(--bg);
+  min-height: 100dvh;
   padding: 15rem 2rem;
+  background-color: var(--bg);
 }
 
 .images {
@@ -199,10 +242,9 @@ img {
 
 .info {
   width: 100%;
-  height: 100%;
-  min-height: 100svh;
-  background-color: var(--bg);
+  min-height: 100dvh;
   display: flex;
+  background-color: var(--bg);
 }
 
 .col {
@@ -217,9 +259,9 @@ img {
 }
 
 .col p {
+  color: var(--fg);
   font-weight: 500;
   font-size: 2rem;
-  color: var(--fg);
 }
 
 .info p {
@@ -235,7 +277,6 @@ img {
 
 ::view-transition-group(navbar) {
   animation: none;
-  z-index: 100;
 }
 
 ::view-transition-old(root) {
@@ -245,36 +286,13 @@ img {
 ::view-transition-new(root) {
   animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
 }
-/* 
-# first version
-@keyframes page-out {
-  from {
-    transform: translateY(0%);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-25%);
-    opacity: 0.25;
-  }
-}
-
-@keyframes page-in {
-  from {
-    transform: translateY(25%);
-    clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
-  }
-  to {
-    transform: translateY(0%);
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-  }
-}
- */
 
 @keyframes page-out {
   from {
     transform: translateY(0%) scale(1);
     opacity: 1;
   }
+
   to {
     transform: translateY(-25%) scale(1.5);
     opacity: 0;
@@ -284,10 +302,11 @@ img {
 @keyframes page-in {
   from {
     transform: translateY(40%);
-    clip-path: polygon(35% 50%, 65% 50%, 65% 50%, 35% 50%);
+    clip-path: inset(50% 35% 50% 35% round 999px);
   }
+
   to {
     transform: translateY(0%);
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    clip-path: inset(0 round 0.1px);
   }
 }
