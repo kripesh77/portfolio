@@ -51,6 +51,16 @@ img {
   background-color: var(--bg);
 }
 
+/* lenis.css ships `.lenis-stopped { overflow: clip }`, which destroys the
+   scroll port — Chrome then reads scrollTop as 0 while the menu is open and
+   restores it on close, i.e. the hamburger made the page jump to the top.
+   lenis.stop()/start() already block wheel and touch handling in JS, so keep
+   the scroller scrollable and the offset untouched (specificity beats lenis'
+   `.lenis:not(.lenis-autoToggle).lenis-stopped` regardless of import order). */
+.main-shell .main-scroll.lenis.lenis-stopped {
+  overflow-y: auto;
+}
+
 .navbar {
   position: fixed;
   inset: 0 0 auto;
