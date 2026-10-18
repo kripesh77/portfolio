@@ -2,9 +2,9 @@
 
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
 import Hamburger from "./Hamburger";
 import { usePathname } from "next/navigation";
+import { lenisRef } from "./lenisStore";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,7 @@ const Navbar = () => {
       timeline.current?.pause(0);
       isOpenRef.current = false;
       setIsOpen(false);
-      ScrollSmoother.get()?.paused(false);
+      lenisRef.current?.start();
     }
   }, [pathname]);
 
@@ -25,7 +25,7 @@ const Navbar = () => {
     timeline.current?.reverse();
     isOpenRef.current = false;
     setIsOpen(false);
-    ScrollSmoother.get()?.paused(false);
+    lenisRef.current?.start();
   }
 
   function handleClick() {
@@ -45,7 +45,7 @@ const Navbar = () => {
           0,
         )
         .to(
-          "#smooth-wrapper",
+          ".main-shell",
           {
             scale: 0.9,
             borderRadius: "24px",
@@ -59,13 +59,12 @@ const Navbar = () => {
 
     if (isOpenRef.current) {
       timeline.current.reverse();
-      // Unlock native scroll (wheel/touch) while the card animates back
-      ScrollSmoother.get()?.paused(false);
+      // Unlock scrolling (wheel/touch) while the card animates back
+      lenisRef.current?.start();
     } else {
       timeline.current.play();
-      // Freeze scroll behind the open menu — blocks wheel AND touch scrolling,
-      // restores progress on unpause (GSAP's official scroll-lock API)
-      ScrollSmoother.get()?.paused(true);
+      // Freeze scroll behind the open menu — Lenis stop() blocks wheel AND touch
+      lenisRef.current?.stop();
     }
 
     isOpenRef.current = !isOpenRef.current;
