@@ -50,6 +50,7 @@ img {
   justify-content: space-between;
   z-index: 9999;
   isolation: auto;
+  view-transition-name: navbar;
 }
 
 .navbar .hamburger {
@@ -266,7 +267,9 @@ img {
   backface-visibility: hidden;
 }
 
-::view-transition-group(navbar) {
+::view-transition-group(navbar),
+::view-transition-old(navbar),
+::view-transition-new(navbar) {
   animation: none;
 }
 

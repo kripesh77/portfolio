@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import Hamburger from "./Hamburger";
 import { usePathname } from "next/navigation";
 
@@ -16,6 +17,7 @@ const Navbar = () => {
       timeline.current?.pause(0);
       isOpenRef.current = false;
       setIsOpen(false);
+      ScrollSmoother.get()?.paused(false);
     }
   }, [pathname]);
 
@@ -23,6 +25,7 @@ const Navbar = () => {
     timeline.current?.reverse();
     isOpenRef.current = false;
     setIsOpen(false);
+    ScrollSmoother.get()?.paused(false);
   }
 
   function handleClick() {
@@ -56,8 +59,13 @@ const Navbar = () => {
 
     if (isOpenRef.current) {
       timeline.current.reverse();
+      // Unlock native scroll (wheel/touch) while the card animates back
+      ScrollSmoother.get()?.paused(false);
     } else {
       timeline.current.play();
+      // Freeze scroll behind the open menu — blocks wheel AND touch scrolling,
+      // restores progress on unpause (GSAP's official scroll-lock API)
+      ScrollSmoother.get()?.paused(true);
     }
 
     isOpenRef.current = !isOpenRef.current;

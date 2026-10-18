@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect } from "react";
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export default function ScrollReset() {
+export default function useScrollReset() {
   const pathname = usePathname();
 
   useIsoLayoutEffect(() => {
