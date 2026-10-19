@@ -14,6 +14,12 @@ import { lenisRef } from "@/components/lenisStore";
 import DataEffects from "@/components/DataEffects";
 import LenisGsapSync from "@/components/LenisGsapSync";
 import Footer from "@/components/Footer";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 
 export default function RootLayout({
   children,

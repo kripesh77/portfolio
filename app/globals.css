@@ -6,7 +6,7 @@
   --fg: #111;
   --brand: #d3fd50;
   /* Navbar height (= .hamburger height), used to offset page content. */
-  --nav-h: 3.125rem;
+  --nav-h: 4.15rem;
 }
 
 html,
@@ -197,7 +197,7 @@ main > :first-child {
   left: 0;
   z-index: -1;
   width: 100%;
-  height: 40vh;
+  height: 40dvh;
   padding-inline: 5vw;
   display: flex;
   justify-content: center;
@@ -336,28 +336,62 @@ main > :first-child {
 /* Footer */
 
 .site-footer {
-  position: relative;
-  min-height: 100dvh;
-  width: 100%;
   background: #111;
   color: #fff;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  padding-top: 5px;
+}
+
+.footer-first-screen {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.footer-copy-row {
+  height: var(--footer-row-height);
+  flex: 0 0 var(--footer-row-height);
   overflow: hidden;
 }
 
-.footer-text {
-  display: block;
+.footer-copy-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+}
+
+.footer-copy,
+.footer-text {
   margin: 0;
   font-family: monospace;
-  font-size: 100px;
-  font-weight: 700;
+  font-size: var(--footer-font-size);
   line-height: 0.7;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.footer-content {
-  min-height: 80vh;
+.footer-text {
+  line-height: 0.7;
+}
+
+.footer-copy-mask {
+  height: var(--footer-visible-height);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Used only to measure the rendered text height. */
+.footer-measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+.footer-second-screen {
+  height: calc(100dvh - var(--nav-h));
+  min-height: 0;
 }
