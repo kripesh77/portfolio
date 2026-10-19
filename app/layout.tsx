@@ -11,8 +11,9 @@ import Logo from "@/components/Logo";
 import NoSameRouteTransitionLink from "@/components/NoSameRouteTransitionLink";
 import ScrollReset from "@/components/ScrollReset";
 import { lenisRef } from "@/components/lenisStore";
-import LenisGsapSync from "@/components/LenisGsapSync";
 import DataEffects from "@/components/DataEffects";
+import LenisGsapSync from "@/components/LenisGsapSync";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -45,9 +46,6 @@ export default function RootLayout({
               options={{ autoRaf: false }}
               className="main-scroll"
               ref={(handle) => {
-                // ReactLenis re-attaches this ref once the instance is created
-                // (useImperativeHandle depends on [lenis]), so the callback
-                // fires again with the populated handle.
                 lenisRef.current = handle?.lenis ?? null;
               }}
             >
@@ -55,6 +53,7 @@ export default function RootLayout({
               <LenisGsapSync />
               <DataEffects />
               <main>{children}</main>
+              <Footer text="KRIPESH" />
             </ReactLenis>
           </div>
         </ViewTransitionsWrapper>

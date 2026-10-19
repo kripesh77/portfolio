@@ -34,7 +34,7 @@ export default function Info() {
   });
 
   return (
-    <div>
+    <>
       <div className="info" ref={container}>
         <div className="col"></div>
         <div className="col">
@@ -48,6 +48,6 @@ export default function Info() {
         </div>
       </div>
       <div className="h-dvh"></div>
-    </div>
+    </>
   );
 }

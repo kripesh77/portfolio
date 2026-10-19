@@ -1,13 +1,22 @@
+
 <svg
-  viewBox="0 0 53 28"
-  fill="white"
   xmlns="http://www.w3.org/2000/svg"
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
 >
-  <path d="M0.5 27.5V0.5H5.5V27.5H0.5Z" />
-  <path d="M18 17.5H13L18 27.5H23L18 17.5Z" />
-  <path d="M51.5 0.5H36.5V5.5H51.5V0.5Z" />
-  <path d="M36.5 22.5V27.5H46.5V22.5H36.5Z" />
-  <path d="M35.5 21.5V6.5H30.5V21.5H35.5Z" />
-  <path d="M52.5 21.5H47.5V16.5H42.5V11.5H52.5V21.5Z" />
-  <path d="M11.8 16.5H6.8L13.8 0.5H18.8L11.8 16.5Z" />
+  <rect width="64" height="64" fill="#FFFFFF"/>
+
+  <g transform="translate(11 16) scale(0.56)">
+    <path
+      d="M20.002 4L8.834 29.343H18.488L29.573 4H20.002ZM0 47.928H8.786V4.006H0V47.928ZM18.469 29.344L26.705 47.928H36.276L28.168 29.337L18.469 29.344Z"
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      fill="#000000"
+    />
+    <path d="M51 4H73V13H51V4Z" fill="#000000"/>
+    <path d="M51 13V39H42V13H51Z" fill="#000000"/>
+    <path d="M51 47.431V39H68V47.431H51Z" fill="#000000"/>
+    <path d="M68 39H77V22H59V30.0526H68V39Z" fill="#000000"/>
+  </g>
 </svg>
