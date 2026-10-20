@@ -97,8 +97,9 @@ export default function Footer({ text = "KRIPESH" }: FooterProps) {
           start: "top 10%",
           endTrigger: ".footer-text",
           end: () =>
-            `+=${document.querySelector(".footer-text")!.getBoundingClientRect().bottom + window.scrollY - window.innerHeight}`,
+            `+=${(fontSize * VISIBLE_RATIO + GAP) * COPY_COUNT - GAP + (document.querySelector(".footer-text")?.getBoundingClientRect().height ?? 0)}`,
           scrub: true,
+          markers: true,
           invalidateOnRefresh: true,
         },
       });
