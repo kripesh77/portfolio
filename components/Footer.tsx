@@ -100,7 +100,6 @@ export default function Footer() {
           endTrigger: ".footer-text",
           end: () => `+=${(fontSize * VISIBLE_RATIO + GAP) * COPY_COUNT}`,
           scrub: true,
-          markers: true,
           invalidateOnRefresh: true,
         },
       });
