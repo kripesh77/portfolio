@@ -258,6 +258,17 @@ main > :first-child {
   min-width: 0;
 }
 
+@media (min-width: 999px) {
+  .home h1 > span > .letter-placeholder {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.home h1 > span > .letter-placeholder {
+  visibility: hidden;
+}
+
 .projects-container {
   width: 100%;
   min-height: calc(100dvh - var(--nav-h));

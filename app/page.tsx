@@ -23,7 +23,7 @@ export default function Home() {
       const tl = gsap.timeline({
         delay: 0.6,
         onUpdate: () => {
-          if (tl.progress() >= 0.3 && !hasTriggered) {
+          if (tl.progress() >= 0.25 && !hasTriggered) {
             hasTriggered = true;
 
             const state = Flip.getState(".home h1", {
@@ -53,7 +53,7 @@ export default function Home() {
           { yPercent: 120 },
           {
             yPercent: 0,
-            duration: 1.2,
+            duration: 1,
             stagger: 0.045,
             ease: "power4.out",
             clearProps: "transform",
@@ -76,8 +76,10 @@ export default function Home() {
           <E />
           <S />
           <H />
+          <div className="letter-placeholder" aria-hidden="true" />
         </span>
         <span>
+          <div className="letter-placeholder" aria-hidden="true" />
           <G />
           <H />
           <I />
