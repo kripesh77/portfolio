@@ -63,8 +63,10 @@ const Navbar = () => {
       lenisRef.current?.start();
     } else {
       timeline.current.play();
-      // Freeze scroll behind the open menu — Lenis stop() blocks wheel AND touch
+
       lenisRef.current?.stop();
+
+      window.dispatchEvent(new Event("menu-open"));
     }
 
     isOpenRef.current = !isOpenRef.current;

@@ -1,51 +1,56 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger, SplitText } from "gsap/all";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { K, R, I, P, E, S, H } from "@/components/letters/Letters";
 
-type FooterProps = {
-  text?: string;
-};
-
-const VISIBLE_RATIO = 0.25;
+const VISIBLE_RATIO = 0.4;
 const GAP = 2;
 const COPY_COUNT = 6;
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export default function Footer({ text = "KRIPESH" }: FooterProps) {
+const LETTERS = [K, R, I, P, E, S, H];
+
+function LetterRow() {
+  return (
+    <div className="footer-copy">
+      {LETTERS.map((Letter, index) => (
+        <div className="footer-letter-mask" key={index}>
+          <Letter />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function Footer() {
   const footerRef = useRef<HTMLElement | null>(null);
   const firstScreenRef = useRef<HTMLElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-  const measureRef = useRef<HTMLHeadingElement | null>(null);
 
   const [fontSize, setFontSize] = useState(100);
 
-  const displayText = Array.from(text).slice(0, 7).join("");
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     const footer = footerRef.current;
-    const measure = measureRef.current;
-
-    if (!footer || !measure) return;
+    if (!footer) return;
 
     const fitText = () => {
       const availableWidth = footer.clientWidth;
       if (!availableWidth) return;
 
-      const styles = getComputedStyle(measure);
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
+      const sample = footer.querySelector<HTMLImageElement>(".footer-copy img");
+      if (!sample) return;
 
-      if (!context) return;
+      const naturalWidth = sample.naturalWidth;
+      const naturalHeight = sample.naturalHeight;
 
-      context.font = `700 100px ${styles.fontFamily}`;
+      if (!naturalWidth || !naturalHeight) return;
 
-      const naturalWidth = context.measureText(displayText).width;
-      if (!naturalWidth) return;
-
-      const nextFontSize = (100 * availableWidth) / naturalWidth;
+      const nextFontSize =
+        (availableWidth * naturalHeight) / (naturalWidth * LETTERS.length);
 
       setFontSize((previous) =>
         Math.abs(previous - nextFontSize) > 0.1 ? nextFontSize : previous,
@@ -57,58 +62,57 @@ export default function Footer({ text = "KRIPESH" }: FooterProps) {
     const observer = new ResizeObserver(fitText);
     observer.observe(footer);
 
-    window.addEventListener("resize", fitText);
-    document.fonts.ready.then(fitText);
+    const images = footer.querySelectorAll("img");
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", fitText);
+      }
+    });
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", fitText);
-    };
-  }, [displayText]);
-
-  useLayoutEffect(() => {
-    const firstScreen = firstScreenRef.current;
-    const list = listRef.current;
-
-    if (!firstScreen || !list) return;
-
-    const scroller = document.querySelector(".main-scroll");
-    const splits: SplitText[] = [];
-
-    const ctx = gsap.context(() => {
-      list.querySelectorAll<HTMLElement>(".footer-copy").forEach((element) => {
-        splits.push(
-          SplitText.create(element, {
-            type: "lines",
-            mask: "lines",
-          }),
-        );
+      images.forEach((img) => {
+        img.removeEventListener("load", fitText);
       });
+    };
+  }, []);
 
-      const lines = splits.flatMap((split) => split.lines);
+  useGSAP(
+    () => {
+      const firstScreen = firstScreenRef.current;
+      const list = listRef.current;
 
-      gsap.to(lines, {
-        yPercent: 120,
-        stagger: 0.15,
+      if (!firstScreen || !list) return;
+
+      const scroller = document.querySelector(".main-scroll");
+
+      const letters = gsap.utils.toArray<HTMLElement>(".footer-copy", list);
+
+      gsap.to(letters, {
+        y: () => fontSize * VISIBLE_RATIO + GAP,
+        scale: 0.95,
+        stagger: 0.4,
         ease: "none",
         scrollTrigger: {
           trigger: firstScreen,
-          scroller: scroller || undefined,
+          scroller: scroller,
           start: "top 10%",
           endTrigger: ".footer-text",
-          end: () =>
-            `+=${(fontSize * VISIBLE_RATIO + GAP) * COPY_COUNT - GAP + (document.querySelector(".footer-text")?.getBoundingClientRect().height ?? 0)}`,
+          end: () => `+=${(fontSize * VISIBLE_RATIO + GAP) * COPY_COUNT}`,
           scrub: true,
           markers: true,
           invalidateOnRefresh: true,
         },
       });
-    }, firstScreen);
 
-    ScrollTrigger.refresh();
-
-    return () => ctx.revert();
-  }, [displayText, fontSize]);
+      ScrollTrigger.refresh();
+    },
+    {
+      scope: footerRef,
+      dependencies: [fontSize],
+      revertOnUpdate: true,
+    },
+  );
 
   return (
     <footer ref={footerRef} className="site-footer">
@@ -116,7 +120,9 @@ export default function Footer({ text = "KRIPESH" }: FooterProps) {
         ref={firstScreenRef}
         className="footer-first-screen"
         style={{
-          height: `${fontSize * VISIBLE_RATIO * COPY_COUNT}px`,
+          height: `${
+            fontSize * VISIBLE_RATIO * COPY_COUNT + GAP * (COPY_COUNT - 1)
+          }px`,
         }}
       >
         <div
@@ -134,19 +140,11 @@ export default function Footer({ text = "KRIPESH" }: FooterProps) {
           {Array.from({ length: COPY_COUNT }, (_, index) => (
             <div className="footer-copy-row" key={index}>
               <div className="footer-copy-mask">
-                <h2 className="footer-copy">{displayText}</h2>
+                <LetterRow />
               </div>
             </div>
           ))}
         </div>
-
-        <h2
-          ref={measureRef}
-          className="footer-copy footer-measure"
-          aria-hidden="true"
-        >
-          {displayText}
-        </h2>
       </section>
 
       <section
@@ -157,7 +155,11 @@ export default function Footer({ text = "KRIPESH" }: FooterProps) {
           } as React.CSSProperties
         }
       >
-        <h2 className="footer-text">{displayText}</h2>
+        <div className="footer-text">
+          <div className="footer-copy-mask">
+            <LetterRow />
+          </div>
+        </div>
       </section>
     </footer>
   );

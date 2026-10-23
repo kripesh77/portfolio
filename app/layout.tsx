@@ -59,7 +59,7 @@ export default function RootLayout({
               <LenisGsapSync />
               <DataEffects />
               <main>{children}</main>
-              <Footer text="KRIPESH" />
+              <Footer />
             </ReactLenis>
           </div>
         </ViewTransitionsWrapper>

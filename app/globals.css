@@ -31,6 +31,11 @@ body {
 }
 
 img {
+  max-width: 100%;
+  height: auto;
+}
+
+.images img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -130,6 +135,16 @@ main > :first-child {
   fill: white;
 }
 
+.navcontent a {
+  display: inline-block;
+  overflow: clip;
+}
+
+.navcontent .char {
+  display: inline-block;
+  will-change: transform;
+}
+
 .hamburger {
   position: relative;
   isolation: isolate;
@@ -226,23 +241,21 @@ main > :first-child {
   display: flex;
   flex-direction: column;
   color: var(--fg);
-  font-size: 20vw;
-  font-weight: bolder;
-  line-height: 1;
-  text-transform: uppercase;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   visibility: hidden;
 }
 
 .home h1 > span {
-  display: inline-block;
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  padding: 6px;
   padding-inline: 0.5vw;
-  text-align: start;
   overflow: clip;
 }
 
-.home h1 > span:nth-child(2) {
-  text-align: end;
+.home h1 > span > img {
+  flex: 1;
+  min-width: 0;
 }
 
 .projects-container {
@@ -302,11 +315,11 @@ main > :first-child {
 }
 
 ::view-transition-old(root) {
-  animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
+  animation: 1600ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
 }
 
 ::view-transition-new(root) {
-  animation: 1300ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
+  animation: 1600ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
 }
 
 @keyframes page-out {
@@ -324,7 +337,7 @@ main > :first-child {
 @keyframes page-in {
   from {
     transform: translateY(40%);
-    clip-path: inset(50% 35% 50% 35% round 999px);
+    clip-path: inset(50% 35% 50% 35% round 50px);
   }
 
   to {
@@ -336,21 +349,31 @@ main > :first-child {
 /* Footer */
 
 .site-footer {
-  background: #111;
-  color: #fff;
+  background-color: #111;
   padding-top: 5px;
+
+  & > img {
+    background-color: white;
+  }
+}
+
+.footer-copy img,
+.footer-text img {
+  filter: invert(1);
+  mix-blend-mode: difference;
 }
 
 .footer-first-screen {
   position: relative;
-  overflow: hidden;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .footer-copy-row {
   height: var(--footer-row-height);
   flex: 0 0 var(--footer-row-height);
   overflow: hidden;
+  perspective: 1000px;
+  transform-origin: center center;
 }
 
 .footer-copy-list {
@@ -360,20 +383,8 @@ main > :first-child {
   display: flex;
   flex-direction: column;
   width: 100%;
-}
-
-.footer-copy,
-.footer-text {
-  margin: 0;
-  font-family: monospace;
-  font-size: var(--footer-font-size);
-  line-height: 0.7;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.footer-text {
-  line-height: 0.7;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .footer-copy-mask {
@@ -382,13 +393,32 @@ main > :first-child {
   flex-shrink: 0;
 }
 
-/* Used only to measure the rendered text height. */
-.footer-measure {
-  position: absolute;
-  visibility: hidden;
-  pointer-events: none;
-  top: 0;
-  left: 0;
+.footer-copy {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.footer-letter-mask {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.footer-letter-mask img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 246 / 234;
+  object-fit: contain;
+}
+
+.footer-text {
+  width: 100%;
+}
+
+.footer-text .footer-copy {
+  width: 100%;
 }
 
 .footer-second-screen {
