@@ -18,8 +18,26 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import localFont from "next/font/local";
 
 gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
+
+const geographFont = localFont({
+  src: [
+    {
+      path: "../public/fonts/geograph-regular.woff2",
+      weight: "400",
+    },
+    {
+      path: "../public/fonts/geograph-medium.woff2",
+      weight: "500",
+    },
+    {
+      path: "../public/fonts/geograph-bold.woff2",
+      weight: "700",
+    },
+  ],
+});
 
 export default function RootLayout({
   children,
@@ -29,7 +47,7 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={geographFont.className}>
       <body className="min-h-full">
         <Navbar />
         <ViewTransitionsWrapper>

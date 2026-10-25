@@ -25,7 +25,6 @@ body {
 }
 
 body {
-  font-family: "PP Neue Montreal", sans-serif;
   background-color: #000;
   color: var(--fg);
 }
@@ -59,17 +58,6 @@ img {
   height: 100%;
   overflow-y: auto;
   background-color: var(--bg);
-}
-
-/* Push every page's content below the fixed navbar. */
-main {
-  padding-top: var(--nav-h);
-}
-
-/* First section fills exactly the rest of the viewport. min-height (not
-   height) so taller content can still grow and keep its background. */
-main > :first-child {
-  min-height: calc(100dvh - var(--nav-h));
 }
 
 /* lenis.css ships `.lenis-stopped { overflow: clip }`, which destroys the
@@ -228,12 +216,22 @@ main > :first-child {
   gap: 10vw;
 }
 
+.home_container {
+  height: 100dvh;
+  display: flex;
+  align-items: end;
+}
+
 .home {
   width: 100%;
   height: calc(100dvh - var(--nav-h));
   background-color: var(--bg);
   display: grid;
-  place-items: center;
+  place-items: end center;
+}
+
+.home p {
+  font-size: calc(0.6 * (7.92453px + 1.88679vw));
 }
 
 .home h1 {

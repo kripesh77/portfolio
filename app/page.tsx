@@ -31,7 +31,7 @@ export default function Home() {
             });
 
             gsap.set(container.current, {
-              placeItems: "start center",
+              placeItems: "center",
             });
 
             Flip.from(state, {
@@ -66,29 +66,32 @@ export default function Home() {
   );
 
   return (
-    <div className="home" ref={container}>
-      <h1>
-        <span>
-          <K />
-          <R />
-          <I />
-          <P />
-          <E />
-          <S />
-          <H />
-          <div className="letter-placeholder" aria-hidden="true" />
-        </span>
-        <span>
-          <div className="letter-placeholder" aria-hidden="true" />
-          <G />
-          <H />
-          <I />
-          <M />
-          <I />
-          <R />
-          <E />
-        </span>
-      </h1>
+    <div className="home_container">
+      <div className="home" ref={container}>
+        <h1>
+          <span>
+            <K />
+            <R />
+            <I />
+            <P />
+            <E />
+            <S />
+            <H />
+            <div className="letter-placeholder" aria-hidden="true" />
+          </span>
+          <span>
+            <div className="letter-placeholder" aria-hidden="true" />
+            <G />
+            <H />
+            <I />
+            <M />
+            <I />
+            <R />
+            <E />
+          </span>
+        </h1>
+        {/* <p className="font-medium">Full Stack Developer</p> */}
+      </div>
     </div>
   );
 }
