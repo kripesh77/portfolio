@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #fff;
+  --bg: #eeeeee;
   --fg: #111;
   --brand: #d3fd50;
   /* Navbar height (= .hamburger height), used to offset page content. */
@@ -11,6 +11,7 @@
 
 html,
 body {
+  font-family: "PP Neue Montreal";
   overflow: hidden;
 }
 
@@ -140,58 +141,16 @@ img {
   overflow: visible;
   color: var(--bg);
   cursor: pointer;
-  height: 4.15rem;
+  height: 5rem;
+  aspect-ratio: 1;
+  top: 10px;
+  right: 10px;
   border: none;
   pointer-events: auto;
   display: flex;
   align-items: center;
-  justify-content: end;
-  padding-right: 1.5625rem;
-}
-
-@media (min-width: 1000px) {
-  .hamburger {
-    width: calc((100vw - 13.125rem) * 3 / 20 + 2.5rem);
-  }
-}
-
-@media (max-width: 999px) {
-  .hamburger {
-    width: 33%;
-  }
-}
-
-@media (max-width: 699px) {
-  .hamburger {
-    width: 50%;
-  }
-}
-
-.hamburger::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-color: var(--brand);
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.1s cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-.hamburger > * {
-  position: relative;
-  z-index: 1;
-  pointer-events: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hamburger:hover::before {
-    clip-path: inset(0);
-  }
-
-  .hamburger:hover svg {
-    color: var(--fg);
-  }
+  justify-content: center;
+  border-radius: 999em;
 }
 
 .navcontent {
@@ -226,12 +185,14 @@ img {
   width: 100%;
   height: calc(100dvh - var(--nav-h));
   background-color: var(--bg);
-  display: grid;
-  place-items: end center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
 }
 
 .home p {
-  font-size: calc(0.6 * (7.92453px + 1.88679vw));
+  font-size: calc(1 * (7.92453px + 1.88679vw));
 }
 
 .home h1 {
@@ -239,16 +200,27 @@ img {
   display: flex;
   flex-direction: column;
   color: var(--fg);
+  font-size: clamp(
+    calc(4 * (7.92453px + 1.88679vw)),
+    15vw,
+    calc(5 * (7.92453px + 1.88679vw))
+  );
+  font-weight: bolder;
+  line-height: 1;
   visibility: hidden;
 }
 
 .home h1 > span {
-  display: flex;
+  display: block;
   width: 100%;
-  gap: 6px;
   padding: 6px;
   padding-inline: 0.5vw;
   overflow: clip;
+  text-align: center;
+}
+
+.home h1 > span .char {
+  font-size: inherit;
 }
 
 .home h1 > span > img {
@@ -260,6 +232,10 @@ img {
   .home h1 > span > .letter-placeholder {
     flex: 1;
     min-width: 0;
+  }
+
+  .home p {
+    font-size: clamp(15px, calc(0.8 * (7.92453px + 1.88679vw)), 32px);
   }
 }
 
@@ -317,12 +293,6 @@ img {
   backface-visibility: hidden;
 }
 
-::view-transition-group(navbar),
-::view-transition-old(navbar),
-::view-transition-new(navbar) {
-  animation: none;
-}
-
 ::view-transition-old(root) {
   animation: 1600ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
 }
@@ -358,11 +328,11 @@ img {
 /* Footer */
 
 .site-footer {
-  background-color: #111;
+  background-color: var(--fg);
   padding-top: 5px;
 
   & > img {
-    background-color: white;
+    background-color: var(--bg);
   }
 }
 

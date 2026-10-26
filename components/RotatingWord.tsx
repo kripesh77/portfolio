@@ -25,7 +25,6 @@ type RotatingWordProps = {
   back: string;
   duration?: number;
   autoRotate?: boolean;
-  /** Delay (in seconds) between each letter to create the twist wave */
   staggerDelay?: number;
 };
 

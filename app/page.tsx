@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Flip } from "gsap/Flip";
 import { useRef } from "react";
-import { K, R, I, P, E, S, H, G, M } from "@/components/letters/Letters";
+import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(useGSAP, Flip);
 
@@ -26,12 +26,12 @@ export default function Home() {
           if (tl.progress() >= 0.25 && !hasTriggered) {
             hasTriggered = true;
 
-            const state = Flip.getState(".home h1", {
+            const state = Flip.getState(".home h1, .home p", {
               props: "transform",
             });
 
             gsap.set(container.current, {
-              placeItems: "center",
+              justifyContent: "space-around",
             });
 
             Flip.from(state, {
@@ -45,11 +45,18 @@ export default function Home() {
 
       let hasTriggered = false;
 
+      const splitInstances: SplitText[] = [];
+
       spans.forEach((span) => {
-        const letters = span.querySelectorAll("img");
+        const split = SplitText.create(span, {
+          type: "chars",
+          charsClass: "char",
+        });
+
+        splitInstances.push(split);
 
         tl.fromTo(
-          letters,
+          split.chars,
           { yPercent: 120 },
           {
             yPercent: 0,
@@ -58,8 +65,12 @@ export default function Home() {
             ease: "power4.out",
             clearProps: "transform",
           },
-          "<+=0.1",
+          "<+=0.02",
         );
+      });
+
+      tl.add(() => {
+        splitInstances.forEach((split) => split.revert());
       });
     },
     { scope: container },
@@ -69,28 +80,10 @@ export default function Home() {
     <div className="home_container">
       <div className="home" ref={container}>
         <h1>
-          <span>
-            <K />
-            <R />
-            <I />
-            <P />
-            <E />
-            <S />
-            <H />
-            <div className="letter-placeholder" aria-hidden="true" />
-          </span>
-          <span>
-            <div className="letter-placeholder" aria-hidden="true" />
-            <G />
-            <H />
-            <I />
-            <M />
-            <I />
-            <R />
-            <E />
-          </span>
+          <span className="flex justify-center">KRIPESH</span>
+          <span className="flex justify-center">GHIMIRE</span>
         </h1>
-        {/* <p className="font-medium">Full Stack Developer</p> */}
+        <p className="font-medium">Full Stack Developer</p>
       </div>
     </div>
   );

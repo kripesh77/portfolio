@@ -8,7 +8,7 @@ import { K, R, I, P, E, S, H } from "@/components/letters/Letters";
 
 const VISIBLE_RATIO = 0.4;
 const GAP = 2;
-const COPY_COUNT = 6;
+const COPY_COUNT = 4;
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -91,7 +91,7 @@ export default function Footer() {
       gsap.to(letters, {
         y: () => fontSize * VISIBLE_RATIO + GAP,
         scale: 0.95,
-        stagger: 0.4,
+        stagger: 0.5,
         ease: "none",
         scrollTrigger: {
           trigger: firstScreen,
