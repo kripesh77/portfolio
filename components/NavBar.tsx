@@ -47,7 +47,7 @@ const Navbar = () => {
         .to(
           ".main-shell",
           {
-            scale: 0.9,
+            scale: 0.97,
             borderRadius: "24px",
             y: "40vh",
             duration: 0.5,
@@ -133,7 +133,7 @@ const Navbar = () => {
       <button
         type="button"
         className={`hamburger absolute top-0 right-0 transition-transform duration-500 ${
-          isOpen ? "translate-x-full" : "translate-x-0"
+          isOpen ? "translate-x-[120%]" : "translate-x-0"
         }`}
         onClick={handleClick}
         aria-label={isOpen ? "Close menu" : "Open menu"}

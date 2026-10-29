@@ -1,38 +1,174 @@
 @import url("https://fonts.cdnfonts.com/css/pp-neue-montreal");
 @import "tailwindcss";
 
+/* =========================================================
+   FONTS
+========================================================= */
+
 @font-face {
-  font-family: druk;
-  src: url(../public/fonts/druk-condensed-super.woff2) format("woff2");
+  font-family: "Druk";
+  src: url("../public/fonts/druk-condensed-super.woff2") format("woff2");
   font-display: swap;
 }
+
+/* =========================================================
+   DESIGN SYSTEM — SOURCE OF TRUTH
+========================================================= */
+
 :root {
-  --bg: #eeeeee;
-  --fg: #111111;
-  --brand: #d3fd50;
-  /* Navbar height (= .hamburger height), used to offset page content. */
-  --nav-h: 4.15rem;
+  /* Colors */
+  --ds-color-bg: #eeeeee;
+  --ds-color-fg: #111111;
+  --ds-color-brand: #d3fd50;
+  --ds-color-transparent: transparent;
+
+  /* Typography */
+  --ds-font-body: "PP Neue Montreal", sans-serif;
+  --ds-font-display: "Druk", sans-serif;
+
+  --ds-weight-regular: 400;
+  --ds-weight-medium: 500;
+  --ds-weight-bold: 800;
+
+  --ds-leading-tight: 0.8;
+  --ds-leading-normal: 1.5;
+
+  --ds-text-xs: 0.875rem;
+  --ds-text-sm: 1rem;
+  --ds-text-base: 1.125rem;
+  --ds-text-md: 1.25rem;
+  --ds-text-lg: 2rem;
+  --ds-text-xl: clamp(2rem, 5vw, 5rem);
+
+  /* Fluid typography */
+  --ds-fluid-unit: calc(7.92453px + 1.88679vw);
+  --ds-text-home-body: var(--ds-fluid-unit);
+
+  --ds-text-home-display: clamp(
+    calc(4 * var(--ds-fluid-unit)),
+    26vw,
+    calc(20 * var(--ds-fluid-unit))
+  );
+
+  --ds-text-home-desktop: clamp(15px, calc(0.8 * var(--ds-fluid-unit)), 32px);
+
+  /* Spacing scale */
+  --ds-space-0: 0;
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-10: 2.5rem;
+  --ds-space-12: 3rem;
+  --ds-space-16: 4rem;
+  --ds-space-20: 5rem;
+
+  /* Layout */
+  --ds-nav-height: 4.15rem;
+  --ds-hamburger-size: 5rem;
+  --ds-page-gutter: var(--ds-space-8);
+  --ds-projects-padding-block: 15rem;
+  --ds-content-width: 30%;
+  --ds-section-min-height: calc(100dvh - var(--ds-nav-height));
+
+  /* Component dimensions */
+  --ds-logo-width: 7.3125rem;
+  --ds-logo-height: 3.125rem;
+  --ds-logo-aspect-ratio: 53 / 28;
+  --ds-footer-row-height: var(--footer-row-height);
+  --ds-footer-visible-height: var(--footer-visible-height);
+
+  /* Borders and shapes */
+  --ds-radius-none: 0;
+  --ds-radius-sm: 0.25rem;
+  --ds-radius-md: 0.5rem;
+  --ds-radius-lg: 1rem;
+  --ds-radius-full: 999em;
+
+  /* Borders */
+  --ds-border-width: 1px;
+  --ds-border-width-strong: 2px;
+
+  /* Motion */
+  --ds-duration-fast: 200ms;
+  --ds-duration-normal: 400ms;
+  --ds-duration-page: 800ms;
+
+  --ds-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ds-ease-page: cubic-bezier(0.841, 0.291, 0.274, 0.947);
+
+  /* Layering */
+  --ds-z-content: 1;
+  --ds-z-navbar: 9999;
+  --ds-z-logo: 10000;
+
+  /* Responsive breakpoints for documentation/reference.
+     CSS media queries cannot use custom properties as breakpoints. */
+  --ds-breakpoint-tablet: 999px;
+}
+
+/* =========================================================
+   TAILWIND CSS V4 THEME BRIDGE
+========================================================= */
+
+@theme inline {
+  --color-bg: var(--ds-color-bg);
+  --color-fg: var(--ds-color-fg);
+  --color-brand: var(--ds-color-brand);
+
+  --font-sans: var(--ds-font-body);
+  --font-display: var(--ds-font-display);
+
+  --text-xs: var(--ds-text-xs);
+  --text-sm: var(--ds-text-sm);
+  --text-base: var(--ds-text-base);
+  --text-md: var(--ds-text-md);
+  --text-lg: var(--ds-text-lg);
+  --text-xl: var(--ds-text-xl);
+
+  --spacing-1: var(--ds-space-1);
+  --spacing-2: var(--ds-space-2);
+  --spacing-3: var(--ds-space-3);
+  --spacing-4: var(--ds-space-4);
+  --spacing-5: var(--ds-space-5);
+  --spacing-6: var(--ds-space-6);
+  --spacing-8: var(--ds-space-8);
+  --spacing-10: var(--ds-space-10);
+  --spacing-12: var(--ds-space-12);
+  --spacing-16: var(--ds-space-16);
+  --spacing-20: var(--ds-space-20);
+
+  --radius-sm: var(--ds-radius-sm);
+  --radius-md: var(--ds-radius-md);
+  --radius-lg: var(--ds-radius-lg);
+  --radius-full: var(--ds-radius-full);
+
+  --animate-page-out: page-out var(--ds-duration-page) var(--ds-ease-page) both;
+  --animate-page-in: page-in var(--ds-duration-page) var(--ds-ease-page) both;
+}
+
+/* =========================================================
+   BASE / RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html,
 body {
-  font-family: "PP Neue Montreal";
+  font-family: var(--ds-font-body);
   overflow: hidden;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
 body {
-  background-color: #000;
-  color: var(--fg);
+  background-color: var(--ds-color-fg);
+  margin: 0;
 }
 
 img {
@@ -40,21 +176,32 @@ img {
   height: auto;
 }
 
-.images img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 ::selection {
-  background-color: var(--brand);
+  background-color: var(--ds-color-brand);
+  color: var(--ds-color-fg);
 }
+
+/* =========================================================
+   MAIN SCROLL CONTAINER
+========================================================= */
 
 .main-shell {
   width: 100%;
-  /* Must be a definite height: .main-scroll's height:100% resolves against
-     this. If it's auto, .main-scroll collapses to content height, never
-     overflows, and scroll dies everywhere (body is overflow:hidden). */
   height: 100dvh;
   overflow: hidden;
 }
@@ -63,18 +210,21 @@ img {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background-color: var(--bg);
+  background-color: var(--ds-color-bg);
 }
 
-/* lenis.css ships `.lenis-stopped { overflow: clip }`, which destroys the
-   scroll port — Chrome then reads scrollTop as 0 while the menu is open and
-   restores it on close, i.e. the hamburger made the page jump to the top.
-   lenis.stop()/start() already block wheel and touch handling in JS, so keep
-   the scroller scrollable and the offset untouched (specificity beats lenis'
-   `.lenis:not(.lenis-autoToggle).lenis-stopped` regardless of import order). */
+/*
+  Preserve the Lenis scroll port while the menu is open.
+  Do not change overflow to clip here: scrollTop must remain intact.
+*/
+
 .main-shell .main-scroll.lenis.lenis-stopped {
   overflow-y: auto;
 }
+
+/* =========================================================
+   NAVBAR
+========================================================= */
 
 .navbar {
   position: fixed;
@@ -82,7 +232,7 @@ img {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  z-index: 9999;
+  z-index: var(--ds-z-navbar);
   isolation: auto;
   view-transition-name: navbar;
 }
@@ -93,26 +243,24 @@ img {
 
 .navbar-items {
   display: flex;
-  gap: clamp(1rem, 4vw, 2rem);
+  gap: clamp(var(--ds-space-4), 4vw, var(--ds-space-8));
 }
 
 .navbar-item {
-  padding: 0.5rem;
+  padding: var(--ds-space-2);
 }
 
-@media (min-width: 1000px) {
-  .navbar-item {
-    padding: 1.25rem;
-  }
-}
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10000;
-  aspect-ratio: 53 / 28;
-  padding: 0.5rem;
+  z-index: var(--ds-z-logo);
+  aspect-ratio: var(--ds-logo-aspect-ratio);
+  padding: var(--ds-space-2);
   mix-blend-mode: difference;
   pointer-events: none;
 }
@@ -124,39 +272,14 @@ img {
 
 .logo-link svg {
   display: block;
-  width: 7.3125rem;
-  height: 3.125rem;
-  fill: white;
+  width: var(--ds-logo-width);
+  height: var(--ds-logo-height);
+  mix-blend-mode: difference;
 }
 
-.navcontent a {
-  display: inline-block;
-  overflow: clip;
-}
-
-.navcontent .char {
-  display: inline-block;
-  will-change: transform;
-}
-
-.hamburger {
-  position: relative;
-  isolation: isolate;
-  background-color: var(--fg);
-  overflow: visible;
-  color: var(--bg);
-  cursor: pointer;
-  height: 5rem;
-  aspect-ratio: 1;
-  top: 10px;
-  right: 10px;
-  border: none;
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999em;
-}
+/* =========================================================
+   NAVIGATION CONTENT
+========================================================= */
 
 .navcontent {
   position: fixed;
@@ -169,9 +292,9 @@ img {
   display: flex;
   justify-content: center;
   align-items: end;
-  color: var(--bg);
-  font-size: clamp(2rem, 5vw, 5rem);
-  font-weight: 800;
+  color: var(--ds-color-bg);
+  font-size: var(--ds-text-xl);
+  font-weight: var(--ds-weight-bold);
   text-transform: uppercase;
 }
 
@@ -179,6 +302,55 @@ img {
   display: flex;
   gap: 10vw;
 }
+
+.navcontent a {
+  display: inline-block;
+  overflow: clip;
+}
+
+.navcontent .char {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* =========================================================
+   HAMBURGER
+========================================================= */
+
+.hamburger {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--ds-color-fg);
+  overflow: visible;
+  color: var(--ds-color-bg);
+  cursor: pointer;
+  height: var(--ds-hamburger-size);
+  aspect-ratio: 1;
+  top: 10px;
+  right: 10px;
+  border: none;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ds-radius-full);
+}
+
+/* Hamburger icon — explicit dimensions */
+.hamburger > svg {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  flex: 0 0 2rem;
+  overflow: visible;
+  color: var(--ds-color-bg);
+}
+
+/* =========================================================
+   HOME / HERO
+========================================================= */
 
 .home_container {
   height: 100dvh;
@@ -188,8 +360,8 @@ img {
 
 .home {
   width: 100%;
-  height: calc(100dvh - var(--nav-h));
-  background-color: var(--bg);
+  height: calc(100dvh - var(--ds-nav-height));
+  background-color: var(--ds-color-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -197,23 +369,25 @@ img {
 }
 
 .home p {
-  font-size: calc(1 * (7.92453px + 1.88679vw));
+  font-size: var(--ds-text-home-body);
 }
 
-.home h1 {
+.home > div h1,
+.home > div p {
   width: 100%;
   display: flex;
   justify-content: center;
-  color: var(--fg);
-  font-family: "druk";
-  font-size: clamp(
-    calc(4 * (7.92453px + 1.88679vw)),
-    26vw,
-    calc(20 * (7.92453px + 1.88679vw))
-  );
-  font-weight: bolder;
-  line-height: 1;
+  color: var(--ds-color-fg);
+  font-family: var(--ds-font-display);
+  font-size: var(--ds-text-home-display);
   visibility: hidden;
+  font-weight: var(--ds-weight-bold);
+  line-height: var(--ds-leading-tight);
+}
+
+.home > div p {
+  color: var(--ds-color-transparent);
+  -webkit-text-stroke: var(--ds-border-width-strong) var(--ds-color-fg);
 }
 
 .home h1 > .char {
@@ -225,41 +399,44 @@ img {
   min-width: 0;
 }
 
-@media (min-width: 999px) {
-  .home h1 > span > .letter-placeholder {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .home p {
-    font-size: clamp(15px, calc(0.8 * (7.92453px + 1.88679vw)), 32px);
-  }
-}
-
 .home h1 > span > .letter-placeholder {
   visibility: hidden;
 }
 
+/* =========================================================
+   PROJECTS
+========================================================= */
+
 .projects-container {
   width: 100%;
-  min-height: calc(100dvh - var(--nav-h));
-  padding: 15rem 2rem;
-  background-color: var(--bg);
+  min-height: var(--ds-section-min-height);
+  padding: var(--ds-projects-padding-block) var(--ds-page-gutter);
+  background-color: var(--ds-color-bg);
 }
 
 .images {
-  width: 30%;
+  width: var(--ds-content-width);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--ds-space-8);
 }
+
+.images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =========================================================
+   INFO SECTION
+========================================================= */
 
 .info {
   width: 100%;
-  min-height: calc(100dvh - var(--nav-h));
+  min-height: var(--ds-section-min-height);
   display: flex;
-  background-color: var(--bg);
+  background-color: var(--ds-color-bg);
 }
 
 .col {
@@ -267,21 +444,25 @@ img {
 }
 
 .col:nth-child(2) {
-  padding: 2rem;
+  padding: var(--ds-space-8);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .col p {
-  color: var(--fg);
-  font-weight: 500;
-  font-size: 2rem;
+  color: var(--ds-color-fg);
+  font-weight: var(--ds-weight-medium);
+  font-size: var(--ds-text-lg);
 }
 
 .info p {
   text-wrap: balance;
 }
+
+/* =========================================================
+   SHARED ANIMATION ELEMENTS
+========================================================= */
 
 .char,
 .line {
@@ -290,12 +471,16 @@ img {
   backface-visibility: hidden;
 }
 
+/* =========================================================
+   PAGE TRANSITIONS
+========================================================= */
+
 ::view-transition-old(root) {
-  animation: 1600ms cubic-bezier(0.75, 0, 0.1, 1) both page-out;
+  animation: page-out var(--ds-duration-page) var(--ds-ease-page) both;
 }
 
 ::view-transition-new(root) {
-  animation: 1600ms cubic-bezier(0.75, 0, 0.1, 1) both page-in;
+  animation: page-in var(--ds-duration-page) var(--ds-ease-page) both;
 }
 
 @keyframes page-out {
@@ -322,15 +507,17 @@ img {
   }
 }
 
-/* Footer */
+/* =========================================================
+   FOOTER
+========================================================= */
 
 .site-footer {
-  background-color: var(--fg);
+  background-color: var(--ds-color-bg);
   padding-top: 5px;
+}
 
-  & > img {
-    background-color: var(--bg);
-  }
+.site-footer > img {
+  background-color: var(--ds-color-fg);
 }
 
 .footer-copy img,
@@ -398,6 +585,31 @@ img {
 }
 
 .footer-second-screen {
-  height: calc(100dvh - var(--nav-h));
+  height: calc(100dvh - var(--ds-nav-height));
   min-height: 0;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 999px) {
+  .home {
+    justify-content: space-around;
+  }
+}
+
+@media (min-width: 999px) {
+  .navbar-item {
+    padding: var(--ds-space-5);
+  }
+
+  .home p {
+    font-size: var(--ds-text-home-desktop);
+  }
+
+  .home h1 > span > .letter-placeholder {
+    flex: 1;
+    min-width: 0;
+  }
 }

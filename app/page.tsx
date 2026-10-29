@@ -9,7 +9,7 @@ import { CustomEase } from "gsap/CustomEase";
 
 gsap.registerPlugin(useGSAP, Flip, CustomEase);
 
-CustomEase.create("customEase", "M0,0 C0.841,0.291 0.07,1 1,1 ");
+CustomEase.create("customEase", "M0,0 C0.736,0.377 0.11,0.961 1,1 ");
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
@@ -22,29 +22,42 @@ export default function Home() {
         charsClass: "char",
       });
 
-      gsap.set("h1", { visibility: "visible" });
+      const pSplit = SplitText.create("p", {
+        type: "chars, words, lines",
+        mask: "chars",
+        charsClass: "char",
+      });
+
+      gsap.set("h1, p", { visibility: "visible" });
 
       h1Split.words.forEach((word) => {
         const chars = word.querySelectorAll(".char");
 
         gsap.from(chars, {
           yPercent: 100,
-          stagger: 0.04,
-          duration: 1.5,
+          stagger: 0.03,
+          duration: 0.8,
           ease: "customEase",
-          onComplete: () => {
-            h1Split.revert();
-          },
         });
+      });
+
+      gsap.from(pSplit.chars, {
+        xPercent: 100,
+        duration: 0.8,
+        stagger: 0.03,
+        ease: "customEase",
       });
     },
     { scope: container },
   );
   return (
     <div className="home_container">
-      <div className="home" ref={container}>
-        <h1>KRIPESH GHIMIRE</h1>
-        <p className="font-medium">Full Stack Developer</p>
+      <div className="home pt-2" ref={container}>
+        <div>
+          <h1>KRIPESH GHIMIRE</h1>
+          <p>FULL-STACK DEV</p>
+        </div>
+        <p>hi</p>
       </div>
     </div>
   );
