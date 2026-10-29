@@ -120,12 +120,12 @@ const Navbar = () => {
         >
           <path
             d="M38.8909 38.8909L116.673 116.673"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="#D3FD50"
           />
           <path
             d="M38.8909 116.673L116.673 38.8909"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="#D3FD50"
           />
         </svg>
