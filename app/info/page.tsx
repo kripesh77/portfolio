@@ -17,13 +17,14 @@ export default function Info() {
       linesClass: "line",
     });
 
+    gsap.set(".info p", { visibility: "visible" });
+
     gsap.fromTo(
-      ".line",
+      split.lines,
       { y: 400 },
       {
         y: 0,
-        duration: 1.3,
-        delay: 0.1,
+        duration: 0.8,
         stagger: 0.1,
         ease: "power3.out",
         onComplete: () => {

@@ -23,7 +23,7 @@
   --ds-color-transparent: transparent;
 
   /* Typography */
-  --ds-font-body: "PP Neue Montreal", sans-serif;
+  --ds-font-body: "Druk", sans-serif;
   --ds-font-display: "Druk", sans-serif;
 
   --ds-weight-regular: 400;
@@ -44,7 +44,12 @@
   --ds-fluid-unit: calc(7.92453px + 1.88679vw);
   --ds-text-home-body: var(--ds-fluid-unit);
 
-  --ds-text-home-display: clamp(
+  --ds-text-home-display-h1: clamp(
+    calc(4 * var(--ds-fluid-unit)),
+    26vw,
+    calc(20 * var(--ds-fluid-unit))
+  );
+  --ds-text-home-display-p: clamp(
     calc(4 * var(--ds-fluid-unit)),
     26vw,
     calc(20 * var(--ds-fluid-unit))
@@ -379,19 +384,43 @@ button {
   justify-content: center;
   color: var(--ds-color-fg);
   font-family: var(--ds-font-display);
-  font-size: var(--ds-text-home-display);
   visibility: hidden;
   font-weight: var(--ds-weight-bold);
   line-height: var(--ds-leading-tight);
 }
 
+.home h1 {
+  font-size: var(--ds-text-home-display-h1);
+}
+
 .home > div p {
+  font-size: var(--ds-text-home-display-p);
   color: var(--ds-color-transparent);
   -webkit-text-stroke: var(--ds-border-width-strong) var(--ds-color-fg);
 }
 
-.home h1 > .char {
-  font-size: inherit;
+.home .char {
+  position: relative;
+  overflow: hidden;
+}
+
+.home .char-track {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.home .char-face {
+  display: block;
+  width: 105%;
+  white-space: pre;
+  line-height: inherit;
+}
+
+.home .char-clone {
+  position: absolute;
+  top: 0;
+  left: 105%;
 }
 
 .home h1 > span > img {
@@ -458,6 +487,7 @@ button {
 
 .info p {
   text-wrap: balance;
+  visibility: hidden;
 }
 
 /* =========================================================
@@ -498,12 +528,12 @@ button {
 @keyframes page-in {
   from {
     transform: translateY(40%);
-    clip-path: inset(50% 35% 50% 35% round 50px);
+    clip-path: inset(50% 35% 50% 35% round 999px);
   }
 
   to {
     transform: translateY(0%);
-    clip-path: inset(0 round 0.1px);
+    clip-path: inset(0 round 0.01px);
   }
 }
 
@@ -560,6 +590,12 @@ button {
   display: flex;
   width: 100%;
   overflow: hidden;
+  /* The rows are isolated stacking contexts (perspective on
+     .footer-copy-list/.footer-copy-row + GSAP transforms), so
+     mix-blend-mode: difference has no footer background to blend with.
+     Repainting the footer background here gives the letters the same
+     backdrop -- and therefore the same color -- as .footer-text. */
+  background-color: var(--ds-color-bg);
 }
 
 .footer-letter-mask {
