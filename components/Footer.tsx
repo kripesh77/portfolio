@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { K, R, I, P, E, S, H } from "@/components/letters/Letters";
 
-const VISIBLE_RATIO = 0.4;
+const VISIBLE_RATIO = 0.25;
 const GAP = 2;
 const COPY_COUNT = 4;
 

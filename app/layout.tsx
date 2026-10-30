@@ -1,6 +1,7 @@
 "use client";
 
 import "./globals.css";
+import { druk, shareTechMono } from "./fonts";
 import "lenis/dist/lenis.css";
 import { ReactLenis } from "lenis/react";
 import { useEffect } from "react";
@@ -29,7 +30,11 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${druk.variable} ${shareTechMono.variable}`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full">
         <Navbar />
         <ViewTransitionsWrapper>

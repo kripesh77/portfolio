@@ -9,7 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger, CustomEase, SplitText);
 
-CustomEase.create("customEase", "M0,0 C0.736,0.377 0.11,0.961 1,1");
+CustomEase.create("customEase", "1, .01, .43, .95");
 
 type TriggerType = string | HTMLElement | RefObject<HTMLElement | null>;
 
@@ -55,7 +55,7 @@ export function useSlideUp(
 
       const split = SplitText.create(targetRef.current, {
         type: "chars, words, lines",
-        mask: "lines",
+        mask: "words",
         charsClass: "char",
       });
 
@@ -75,8 +75,8 @@ export function useSlideUp(
           word.children,
           {
             yPercent: 100,
-            stagger: options.stagger ?? 0.03,
-            duration: options.duration ?? 0.8,
+            stagger: options.stagger ?? 0.05,
+            duration: options.duration ?? 1,
             ease: options.ease ?? "customEase",
           },
           0,
@@ -121,17 +121,31 @@ export function useSlideIn(
 
       gsap.set(targetRef.current, { visibility: "visible" });
 
-      gsap.from(split.chars, {
-        xPercent: 100,
-        duration: options.duration ?? 0.8,
-        stagger: options.stagger ?? 0.03,
-        ease: options.ease ?? "customEase",
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerElement,
           start: options.start ?? "top bottom",
           end: options.end ?? "bottom top",
           toggleActions: options.toggleActions ?? "play reverse play reverse",
         },
+      });
+
+      // All words animate in parallel (added at position 0), only the chars
+      // within each word stagger — same structure as useSlideUp. With
+      // mask: "chars" each char is wrapped in a .char-mask element, so we
+      // target the .char elements themselves; animating word.children would
+      // move the masks too and break the clipping.
+      split.words.forEach((word) => {
+        tl.from(
+          word.querySelectorAll(".char"),
+          {
+            xPercent: 100,
+            stagger: options.stagger ?? 0.05,
+            duration: options.duration ?? 1,
+            ease: options.ease ?? "customEase",
+          },
+          0,
+        );
       });
 
       setSplitInstance(split);

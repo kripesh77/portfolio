@@ -1,15 +1,11 @@
-@import url("https://fonts.cdnfonts.com/css/pp-neue-montreal");
 @import "tailwindcss";
 
 /* =========================================================
-   FONTS
+   FONTS — loaded via next/font in app/fonts.ts (self-hosted, preloaded,
+   size-adjusted fallbacks). The variable classes live on <html>:
+   - Druk → var(--ds-font-druk), wired to --ds-font-body / --ds-font-display
+   - Share Tech Mono → var(--ds-font-caption), the base font on html, body
 ========================================================= */
-
-@font-face {
-  font-family: "Druk";
-  src: url("../public/fonts/druk-condensed-super.woff2") format("woff2");
-  font-display: swap;
-}
 
 /* =========================================================
    DESIGN SYSTEM — SOURCE OF TRUTH
@@ -23,8 +19,8 @@
   --ds-color-transparent: transparent;
 
   /* Typography */
-  --ds-font-body: "Druk", sans-serif;
-  --ds-font-display: "Druk", sans-serif;
+  --ds-font-body: var(--ds-font-druk), sans-serif;
+  --ds-font-display: var(--ds-font-druk), sans-serif;
 
   --ds-weight-regular: 400;
   --ds-weight-medium: 500;
@@ -44,16 +40,8 @@
   --ds-fluid-unit: calc(7.92453px + 1.88679vw);
   --ds-text-home-body: var(--ds-fluid-unit);
 
-  --ds-text-home-display-h1: clamp(
-    calc(4 * var(--ds-fluid-unit)),
-    26vw,
-    calc(20 * var(--ds-fluid-unit))
-  );
-  --ds-text-home-display-p: clamp(
-    calc(4 * var(--ds-fluid-unit)),
-    26vw,
-    calc(20 * var(--ds-fluid-unit))
-  );
+  --ds-text-home-display-h1: max(140px, 26vw);
+  --ds-text-home-display-p: max(110px, 19vw);
 
   --ds-text-home-desktop: clamp(15px, calc(0.8 * var(--ds-fluid-unit)), 32px);
 
@@ -103,10 +91,10 @@
   /* Motion */
   --ds-duration-fast: 200ms;
   --ds-duration-normal: 400ms;
-  --ds-duration-page: 800ms;
+  --ds-duration-page: 1000ms;
 
   --ds-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ds-ease-page: cubic-bezier(0.841, 0.291, 0.274, 0.947);
+  --ds-ease-page: cubic-bezier(1, 0.01, 0.43, 0.95);
 
   /* Layering */
   --ds-z-content: 1;
@@ -170,7 +158,7 @@
 
 html,
 body {
-  font-family: var(--ds-font-body);
+  font-family: var(--ds-font-caption);
   overflow: hidden;
 }
 
@@ -264,11 +252,10 @@ button {
 
 .logo-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: var(--ds-space-4);
+  left: var(--ds-space-4);
   z-index: var(--ds-z-logo);
   aspect-ratio: var(--ds-logo-aspect-ratio);
-  padding: var(--ds-space-2);
   mix-blend-mode: difference;
   pointer-events: none;
   transition: transform var(--ds-duration-normal) var(--ds-ease-standard);
@@ -306,6 +293,7 @@ button {
   font-size: var(--ds-text-xl);
   font-weight: var(--ds-weight-bold);
   text-transform: uppercase;
+  font-family: "Druk";
 }
 
 .navcontent > div {
@@ -340,8 +328,8 @@ button {
      itself off from the aspect ratio. */
   width: var(--ds-hamburger-size);
   aspect-ratio: 1;
-  top: 10px;
-  right: 10px;
+  top: var(--ds-space-4);
+  right: var(--ds-space-4);
   border: none;
   pointer-events: auto;
   display: flex;
@@ -354,11 +342,11 @@ button {
 .hamburger > svg {
   padding: var(--ds-space-1);
   display: block;
-  width: calc(var(--ds-hamburger-size) / 1.5);
-  height: calc(var(--ds-hamburger-size) / 1.5);
-  min-width: calc(var(--ds-hamburger-size) / 1.5);
-  min-height: calc(var(--ds-hamburger-size) / 1.5);
-  flex: 0 0 calc(var(--ds-hamburger-size) / 1.5);
+  width: calc(var(--ds-hamburger-size) / 1.6);
+  height: calc(var(--ds-hamburger-size) / 1.6);
+  min-width: calc(var(--ds-hamburger-size) / 1.6);
+  min-height: calc(var(--ds-hamburger-size) / 1.6);
+  flex: 0 0 calc(var(--ds-hamburger-size) / 1.6);
   overflow: visible;
   color: var(--ds-color-bg);
 }
@@ -379,7 +367,7 @@ html.nav-hidden .hamburger-slide {
 }
 
 html.nav-hidden .logo-overlay {
-  transform: translateY(-100%);
+  transform: translateY(calc(-100% - 20px));
 }
 
 /* =========================================================
@@ -396,10 +384,7 @@ html.nav-hidden .logo-overlay {
   width: 100%;
   height: calc(100dvh - var(--ds-nav-height));
   background-color: var(--ds-color-bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  padding: var(--ds-space-4) var(--ds-space-2) 0;
 }
 
 .home p {
@@ -409,8 +394,6 @@ html.nav-hidden .logo-overlay {
 .home > div h1,
 .home > div p {
   width: 100%;
-  display: flex;
-  justify-content: center;
   color: var(--ds-color-fg);
   font-family: var(--ds-font-display);
   visibility: hidden;
@@ -657,12 +640,6 @@ html.nav-hidden .logo-overlay {
 /* =========================================================
    RESPONSIVE
 ========================================================= */
-
-@media (max-width: 999px) {
-  .home {
-    justify-content: space-around;
-  }
-}
 
 @media (min-width: 999px) {
   .navbar-item {

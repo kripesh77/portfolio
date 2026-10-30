@@ -254,12 +254,13 @@ export default function Home() {
   return (
     <div className="home_container">
       <div className="home pt-2" ref={container}>
-        <div>
+        <div className="sr-only">KRIPESH GHIMIRE</div>
+        <div aria-hidden="true">
           <h1 ref={headingRef}>KRIPESH GHIMIRE</h1>
-          <p ref={paragraphRef}>FULL-STACK DEV</p>
+          <p ref={paragraphRef}>FULL-STACK DEVELOPER</p>
         </div>
 
-        <p>hi</p>
+        <div>hi</div>
       </div>
     </div>
   );
