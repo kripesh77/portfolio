@@ -2,9 +2,16 @@
 
 import { useRef, useState, useEffect, MouseEventHandler } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hamburger from "./Hamburger";
 import { usePathname } from "next/navigation";
 import { lenisRef } from "./lenisStore";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Downward scroll distance (px) the scroller must travel before the marks
+ *  slide out of view. Any upward scroll brings them straight back. */
+const NAV_HIDE_AFTER = 120;
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +27,36 @@ const Navbar = () => {
       lenisRef.current?.start();
     }
   }, [pathname]);
+
+  // Slide the marks off while scrolling down, bring them back on scroll up.
+  // The logo lives in layout.tsx (outside this component), so the shared
+  // state is a class on <html> and CSS drives both elements from there.
+  //
+  // Lenis scrolls .main-scroll (window never moves), so the trigger binds to
+  // that element explicitly: this effect runs before LenisGsapSync registers
+  // the global ScrollTrigger default scroller.
+  useEffect(() => {
+    const scroller = document.querySelector<HTMLElement>(".main-scroll");
+    if (!scroller) return;
+
+    const root = document.documentElement;
+
+    const trigger = ScrollTrigger.create({
+      scroller,
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        const pastThreshold = self.scroll() > NAV_HIDE_AFTER;
+        const scrollingDown = self.direction === 1;
+        root.classList.toggle("nav-hidden", pastThreshold && scrollingDown);
+      },
+    });
+
+    return () => {
+      trigger.kill();
+      root.classList.remove("nav-hidden");
+    };
+  }, []);
 
   function closeMenu() {
     timeline.current?.reverse();
@@ -81,10 +118,10 @@ const Navbar = () => {
     const y = gsap.utils.mapRange(rect.top, rect.bottom, -1, 1, e.clientY);
 
     gsap.to(".hamburger svg", {
-      x: x * 20,
-      y: y * 20,
-      rotationY: x * 50,
-      rotationX: -y * 50,
+      x: x * 10,
+      y: y * 10,
+      rotationY: x * 30,
+      rotationX: -y * 30,
       duration: 0.4,
       ease: "power2.out",
       overwrite: "auto",
@@ -106,43 +143,38 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div
-        className={`absolute top-0 right-0 transition-transform duration-500 ${
+        className={`absolute top-0 right-0 transition-transform duration-500 w-fit cursor-pointer ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         onClick={closeMenu}
       >
         <svg
-          width="156"
-          height="156"
-          viewBox="0 0 156 156"
+          width="110"
+          height="110"
+          viewBox="0 0 110 110"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          style={{ transform: "rotate(45deg)" }}
         >
-          <path
-            d="M38.8909 38.8909L116.673 116.673"
-            strokeWidth="2"
-            stroke="#D3FD50"
-          />
-          <path
-            d="M38.8909 116.673L116.673 38.8909"
-            strokeWidth="2"
-            stroke="#D3FD50"
-          />
+          <path d="M55 0L55 110" strokeWidth="2" stroke="#D3FD50" />
+          <path d="M0 55H110" strokeWidth="2" stroke="#D3FD50" />
         </svg>
       </div>
-      <button
-        type="button"
-        className={`hamburger absolute top-0 right-0 transition-transform duration-500 ${
-          isOpen ? "translate-x-[120%]" : "translate-x-0"
-        }`}
-        onClick={handleClick}
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-        aria-expanded={isOpen}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <Hamburger />
-      </button>
+      <div className="hamburger-slide">
+        <button
+          type="button"
+          className={`hamburger absolute top-0 right-0 transition-transform duration-500 p-4 ${
+            isOpen ? "translate-x-[120%]" : "translate-x-0"
+          }`}
+          onClick={handleClick}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Hamburger />
+        </button>
+      </div>
     </nav>
   );
 };

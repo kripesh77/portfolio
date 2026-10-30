@@ -39,7 +39,7 @@ export default function Info() {
       <div className="info" ref={container}>
         <div className="col"></div>
         <div className="col">
-          <p>
+          <p className="font-normal">
             Kaelon is a portrait photographer who captures striking and artistic
             images. His work focuses on light, shadow, and movement, creating
             portraits that feel both modern and timeless. With a minimal and

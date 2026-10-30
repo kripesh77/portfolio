@@ -64,8 +64,8 @@ export function useSlideUp(
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerElement,
-          start: options.start ?? "top 80%",
-          end: options.end ?? "bottom 20%",
+          start: options.start ?? "top bottom",
+          end: options.end ?? "bottom top",
           toggleActions: options.toggleActions ?? "play reverse play reverse",
         },
       });
@@ -128,8 +128,8 @@ export function useSlideIn(
         ease: options.ease ?? "customEase",
         scrollTrigger: {
           trigger: triggerElement,
-          start: options.start ?? "top 80%",
-          end: options.end ?? "bottom 20%",
+          start: options.start ?? "top bottom",
+          end: options.end ?? "bottom top",
           toggleActions: options.toggleActions ?? "play reverse play reverse",
         },
       });

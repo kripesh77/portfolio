@@ -73,16 +73,19 @@
 
   /* Layout */
   --ds-nav-height: 4.15rem;
-  --ds-hamburger-size: 5rem;
   --ds-page-gutter: var(--ds-space-8);
   --ds-projects-padding-block: 15rem;
   --ds-content-width: 30%;
   --ds-section-min-height: calc(100dvh - var(--ds-nav-height));
 
   /* Component dimensions */
-  --ds-logo-width: 7.3125rem;
-  --ds-logo-height: 3.125rem;
+  --ds-logo-width: clamp(5rem, 10vw, 7.3125rem);
+
   --ds-logo-aspect-ratio: 53 / 28;
+  --ds-logo-height: calc(var(--ds-logo-width) / 1.75);
+  /* Square (aspect-ratio: 1 on .hamburger) and matched to the logo height
+     so both nav marks sit on the same optical line. */
+  --ds-hamburger-size: var(--ds-logo-height);
   --ds-footer-row-height: var(--footer-row-height);
   --ds-footer-visible-height: var(--footer-visible-height);
 
@@ -242,7 +245,7 @@ button {
   view-transition-name: navbar;
 }
 
-.navbar .hamburger {
+.navbar .hamburger-slide {
   margin-left: auto;
 }
 
@@ -268,6 +271,7 @@ button {
   padding: var(--ds-space-2);
   mix-blend-mode: difference;
   pointer-events: none;
+  transition: transform var(--ds-duration-normal) var(--ds-ease-standard);
 }
 
 .logo-link {
@@ -277,8 +281,9 @@ button {
 
 .logo-link svg {
   display: block;
-  width: var(--ds-logo-width);
+  width: fit-content;
   height: var(--ds-logo-height);
+  letter-spacing: 0.8;
   mix-blend-mode: difference;
 }
 
@@ -330,6 +335,10 @@ button {
   color: var(--ds-color-bg);
   cursor: pointer;
   height: var(--ds-hamburger-size);
+  /* Both axes set: inside .hamburger-slide (a shrink-to-fit wrapper) the
+     button would otherwise inherit the wrapper's width instead of squaring
+     itself off from the aspect ratio. */
+  width: var(--ds-hamburger-size);
   aspect-ratio: 1;
   top: 10px;
   right: 10px;
@@ -343,14 +352,34 @@ button {
 
 /* Hamburger icon — explicit dimensions */
 .hamburger > svg {
+  padding: var(--ds-space-1);
   display: block;
-  width: 2rem;
-  height: 2rem;
-  min-width: 2rem;
-  min-height: 2rem;
-  flex: 0 0 2rem;
+  width: calc(var(--ds-hamburger-size) / 1.5);
+  height: calc(var(--ds-hamburger-size) / 1.5);
+  min-width: calc(var(--ds-hamburger-size) / 1.5);
+  min-height: calc(var(--ds-hamburger-size) / 1.5);
+  flex: 0 0 calc(var(--ds-hamburger-size) / 1.5);
   overflow: visible;
   color: var(--ds-color-bg);
+}
+
+/* Scroll hide/show — html.nav-hidden is toggled from NavBar.tsx once the
+   scroller passes NAV_HIDE_AFTER while moving down, and cleared on any
+   upward scroll: both marks slide straight up out of view. On the hamburger
+   the slide lands on .hamburger-slide (a wrapper), not .hamburger itself, so
+   it never overrides the Tailwind translate that moves the button aside when
+   the menu opens. The extra 20px clears the button's top: 10px offset (plus
+   a small margin) so nothing peeks over the top edge. */
+.hamburger-slide {
+  transition: transform var(--ds-duration-normal) var(--ds-ease-standard);
+}
+
+html.nav-hidden .hamburger-slide {
+  transform: translateY(calc(-100% - 20px));
+}
+
+html.nav-hidden .logo-overlay {
+  transform: translateY(-100%);
 }
 
 /* =========================================================
@@ -528,7 +557,7 @@ button {
 @keyframes page-in {
   from {
     transform: translateY(40%);
-    clip-path: inset(50% 35% 50% 35% round 999px);
+    clip-path: inset(50% 35% 50% 35% round 100px);
   }
 
   to {

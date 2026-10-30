@@ -7,12 +7,6 @@ export default function Hamburger() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      style={{
-        display: "block",
-        width: "36px",
-        height: "16px",
-        flexShrink: 0,
-      }}
     >
       <path
         d="M1 15H35"

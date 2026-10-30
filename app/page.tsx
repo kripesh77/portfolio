@@ -29,8 +29,8 @@ export default function Home() {
   const paragraphRef = useRef<HTMLParagraphElement>(null);
 
   // Trigger decoupled intro animation hooks
-  const h1Split = useSlideUp(headingRef, { trigger: ".home" });
-  const pSplit = useSlideIn(paragraphRef, { trigger: ".home" });
+  const h1Split = useSlideUp(headingRef, { trigger: paragraphRef });
+  const pSplit = useSlideIn(paragraphRef, { trigger: paragraphRef });
 
   // Interactive Hover & Random Loop Logic
   useGSAP(
@@ -141,7 +141,7 @@ export default function Home() {
 
         gsap.to(character.track, {
           ...OFFSETS[direction],
-          duration: 0.3,
+          duration: 0.4,
           ease: "power2.inOut",
           onComplete: () => {
             gsap.set(character.track, {
@@ -193,7 +193,7 @@ export default function Home() {
           return;
         }
 
-        animateCharacter(character, "right", () => {
+        animateCharacter(character, "left", () => {
           isHovering = false;
         });
       };
@@ -209,7 +209,7 @@ export default function Home() {
           const character = getRandomCharacter();
 
           if (!character) {
-            scheduleRandom(0.15);
+            scheduleRandom(0.5);
             return;
           }
 
@@ -231,7 +231,7 @@ export default function Home() {
         });
       }
 
-      scheduleRandom(0.1 + Math.random() * 1.5);
+      scheduleRandom(0.5 + Math.random() * 1.5);
 
       return () => {
         stopped = true;
