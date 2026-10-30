@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useState, useEffect, MouseEventHandler } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hamburger from "./Hamburger";
 import { usePathname } from "next/navigation";
 import { lenisRef } from "./lenisStore";
+import { useGSAP } from "@gsap/react";
+import { addSlideUp } from "@/hooks/useTextAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -58,6 +60,36 @@ const Navbar = () => {
     };
   }, []);
 
+  // Capture every menu link and build the open/close timeline once. The
+  // shell tuck and the word-masked slide-up (same reveal as useSlideUp)
+  // live in one paused timeline, so play/reverse drives them together.
+  useGSAP(() => {
+    const links = gsap.utils.toArray<HTMLElement>(".navcontent a");
+
+    const tl = gsap.timeline({ paused: true });
+    timeline.current = tl;
+
+    tl.to(
+      ".main-shell",
+      {
+        scale: 0.97,
+        borderRadius: "24px",
+        y: "40vh",
+        duration: 0.5,
+        ease: "customEase",
+      },
+      0,
+    );
+
+    const split = addSlideUp(tl, links, { duration: 0.5 });
+
+    return () => {
+      split.revert();
+      tl.kill();
+      if (timeline.current === tl) timeline.current = null;
+    };
+  });
+
   function closeMenu() {
     timeline.current?.reverse();
     isOpenRef.current = false;
@@ -66,40 +98,12 @@ const Navbar = () => {
   }
 
   function handleClick() {
-    if (!timeline.current) {
-      timeline.current = gsap.timeline({ paused: true });
-
-      timeline.current
-        .fromTo(
-          ".navcontent",
-          { y: "-100%", zIndex: -1 },
-          {
-            y: 0,
-            zIndex: 999,
-            duration: 0.5,
-            ease: "power2.inOut",
-          },
-          0,
-        )
-        .to(
-          ".main-shell",
-          {
-            scale: 0.97,
-            borderRadius: "24px",
-            y: "40vh",
-            duration: 0.5,
-            ease: "power2.inOut",
-          },
-          0,
-        );
-    }
-
     if (isOpenRef.current) {
-      timeline.current.reverse();
+      timeline.current?.reverse();
       // Unlock scrolling (wheel/touch) while the card animates back
       lenisRef.current?.start();
     } else {
-      timeline.current.play();
+      timeline.current?.play();
 
       lenisRef.current?.stop();
 

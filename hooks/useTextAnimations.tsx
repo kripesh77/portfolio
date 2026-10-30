@@ -35,6 +35,38 @@ const resolveTrigger = (
   return trigger.current ?? fallback;
 };
 
+// Builds the slide-up reveal (word-masked SplitText + parallel per-word
+// yPercent tweens) on an EXISTING timeline so callers can drive it with
+// play()/reverse() instead of ScrollTrigger. Returns the split for revert.
+export function addSlideUp(
+  tl: gsap.core.Timeline,
+  target: HTMLElement | HTMLElement[] | NodeListOf<Element>,
+  options: IntroOptions = {},
+): SplitText {
+  const split = SplitText.create(target, {
+    type: "chars, words, lines",
+    mask: "words",
+    charsClass: "char",
+  });
+
+  gsap.set(target, { visibility: "visible" });
+
+  split.words.forEach((word) => {
+    tl.from(
+      word.children,
+      {
+        yPercent: 100,
+        stagger: options.stagger ?? 0.05,
+        duration: options.duration ?? 1,
+        ease: options.ease ?? "customEase",
+      },
+      "<",
+    );
+  });
+
+  return split;
+}
+
 // Reusable hook for Heading intro (yPercent slide-up) with custom trigger
 export function useSlideUp(
   targetRef: RefObject<
@@ -53,14 +85,6 @@ export function useSlideUp(
         targetRef.current as HTMLElement,
       );
 
-      const split = SplitText.create(targetRef.current, {
-        type: "chars, words, lines",
-        mask: "words",
-        charsClass: "char",
-      });
-
-      gsap.set(targetRef.current, { visibility: "visible" });
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerElement,
@@ -70,18 +94,7 @@ export function useSlideUp(
         },
       });
 
-      split.words.forEach((word) => {
-        tl.from(
-          word.children,
-          {
-            yPercent: 100,
-            stagger: options.stagger ?? 0.05,
-            duration: options.duration ?? 1,
-            ease: options.ease ?? "customEase",
-          },
-          0,
-        );
-      });
+      const split = addSlideUp(tl, targetRef.current, options);
 
       setSplitInstance(split);
 
