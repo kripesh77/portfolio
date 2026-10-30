@@ -650,7 +650,7 @@ html.nav-hidden .logo-overlay {
 }
 
 .footer-second-screen {
-  height: calc(100dvh - var(--ds-nav-height));
+  height: 100dvh;
   min-height: 0;
 }
 

@@ -96,7 +96,7 @@ export default function Footer() {
         scrollTrigger: {
           trigger: firstScreen,
           scroller: scroller,
-          start: "top 10%",
+          start: "top 9%",
           endTrigger: ".footer-text",
           end: () => `+=${(fontSize * VISIBLE_RATIO + GAP) * COPY_COUNT}`,
           scrub: true,
