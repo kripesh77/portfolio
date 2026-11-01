@@ -288,7 +288,7 @@ button {
   padding-inline: 5vw;
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: center;
   color: var(--ds-color-bg);
   font-size: var(--ds-text-xl);
   font-weight: var(--ds-weight-bold);
@@ -298,7 +298,7 @@ button {
 
 .navcontent > div {
   display: flex;
-  gap: 10vw;
+  gap: 8vw;
 }
 
 .navcontent a {
@@ -310,6 +310,14 @@ button {
 .navcontent .char {
   display: inline-block;
   will-change: transform;
+}
+
+/* Menu close — html.nav-links-hidden is toggled from NavBar.tsx the instant
+   the menu closes. !important is required: GSAP leaves an inline transform
+   on each char after the reveal, and only important beats inline. */
+html.nav-links-hidden .navcontent .char {
+  transform: translateY(100%) !important;
+  transition: transform 0.2s cubic-bezier(1, 0.01, 0.43, 0.95);
 }
 
 /* =========================================================

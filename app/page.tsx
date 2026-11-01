@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
-import { useSlideIn, useSlideUp } from "@/hooks/useTextAnimations";
+import { useRevealOnScroll } from "@/hooks/useTextAnimations";
 
 type Direction = "left" | "right" | "top" | "bottom";
 
@@ -29,8 +29,12 @@ export default function Home() {
   const paragraphRef = useRef<HTMLParagraphElement>(null);
 
   // Trigger decoupled intro animation hooks
-  const h1Split = useSlideUp(headingRef, { trigger: paragraphRef });
-  const pSplit = useSlideIn(paragraphRef, { trigger: paragraphRef });
+  const h1Split = useRevealOnScroll(headingRef, "slideUp", {
+    trigger: paragraphRef,
+  });
+  const pSplit = useRevealOnScroll(paragraphRef, "slideIn", {
+    trigger: paragraphRef,
+  });
 
   // Interactive Hover & Random Loop Logic
   useGSAP(

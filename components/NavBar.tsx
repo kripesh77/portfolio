@@ -7,7 +7,7 @@ import Hamburger from "./Hamburger";
 import { usePathname } from "next/navigation";
 import { lenisRef } from "./lenisStore";
 import { useGSAP } from "@gsap/react";
-import { addSlideUp } from "@/hooks/useTextAnimations";
+import { playReveal } from "@/hooks/useTextAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,9 +20,11 @@ const Navbar = () => {
   const timeline = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
   const isOpenRef = useRef(false);
+  const linkReveal = useRef<ReturnType<typeof playReveal> | null>(null);
 
   useEffect(() => {
     if (isOpenRef.current) {
+      hideLinks();
       timeline.current?.pause(0);
       isOpenRef.current = false;
       setIsOpen(false);
@@ -60,13 +62,47 @@ const Navbar = () => {
     };
   }, []);
 
+  // Instant hide for the links: one class on <html>, CSS translates every
+  // char back under its mask. No tween — the shell would sweep over
+  // anything animated out before it could be seen.
+  function hideLinks() {
+    document.documentElement.classList.add("nav-links-hidden");
+  }
+
   // Capture every menu link and build the open/close timeline once. The
-  // shell tuck and the word-masked slide-up (same reveal as useSlideUp)
-  // live in one paused timeline, so play/reverse drives them together.
+  // link reveal is NOT attached to it: crossing 0.25 progress fires the
+  // slide-up independently (dropping the hide class first), and the guard
+  // re-arms below that mark so every open re-animates.
   useGSAP(() => {
     const links = gsap.utils.toArray<HTMLElement>(".navcontent a");
 
-    const tl = gsap.timeline({ paused: true });
+    let triggered = false;
+
+    const tl = gsap.timeline({
+      paused: true,
+      onUpdate: () => {
+        if (tl.progress() >= 0.25 && !triggered) {
+          triggered = true;
+
+          // Lift the CSS hide in the same tick — no paint between.
+          document.documentElement.classList.remove("nav-links-hidden");
+
+          // First crossing splits the links; later ones just replay —
+          // re-splitting already-split text would corrupt the DOM.
+          if (linkReveal.current) {
+            linkReveal.current.timeline.restart();
+          } else {
+            linkReveal.current = playReveal(links, "slideUp", {
+              duration: 0.5,
+            });
+          }
+        }
+
+        if (tl.progress() < 0.25) {
+          triggered = false;
+        }
+      },
+    });
     timeline.current = tl;
 
     tl.to(
@@ -81,16 +117,16 @@ const Navbar = () => {
       0,
     );
 
-    const split = addSlideUp(tl, links, { duration: 0.5 });
-
     return () => {
-      split.revert();
+      linkReveal.current?.revert();
       tl.kill();
       if (timeline.current === tl) timeline.current = null;
+      document.documentElement.classList.remove("nav-links-hidden");
     };
-  });
+  }, []);
 
   function closeMenu() {
+    hideLinks();
     timeline.current?.reverse();
     isOpenRef.current = false;
     setIsOpen(false);
@@ -99,6 +135,7 @@ const Navbar = () => {
 
   function handleClick() {
     if (isOpenRef.current) {
+      hideLinks();
       timeline.current?.reverse();
       // Unlock scrolling (wheel/touch) while the card animates back
       lenisRef.current?.start();
