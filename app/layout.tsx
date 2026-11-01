@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${druk.variable} ${shareTechMono.variable}`}
+      className={`${druk.variable} ${shareTechMono.variable} nav-links-hidden`}
       suppressHydrationWarning
     >
       <body className="min-h-full">

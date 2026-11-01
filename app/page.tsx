@@ -8,7 +8,6 @@ import { useRevealOnScroll } from "@/hooks/useTextAnimations";
 type Direction = "left" | "right" | "top" | "bottom";
 
 type Character = {
-  element: HTMLElement;
   track: HTMLElement;
   clone: HTMLElement;
   busy: boolean;
@@ -36,7 +35,8 @@ export default function Home() {
     trigger: paragraphRef,
   });
 
-  // Interactive Hover & Random Loop Logic
+  // Random character loop — one char at a time drifts out in a random
+  // direction while its clone slides in behind, then the next is queued.
   useGSAP(
     () => {
       if (!h1Split || !pSplit) return;
@@ -61,34 +61,15 @@ export default function Home() {
         clone.setAttribute("aria-hidden", "true");
 
         track.append(first, clone);
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(track);
-
         charElement.textContent = "";
-        charElement.appendChild(fragment);
+        charElement.appendChild(track);
 
-        characters.push({
-          element: charElement,
-          track,
-          clone,
-          busy: false,
-        });
+        characters.push({ track, clone, busy: false });
       });
 
       let previousIndex = -1;
-      let isHovering = false;
       let stopped = false;
-      let activeRandom: Character | null = null;
       let randomCall: gsap.core.Tween | null = null;
-
-      const hoverQueue = new Set<Character>();
-      const hoverHandlers = new Map<HTMLElement, () => void>();
-
-      const clearRandomCall = () => {
-        randomCall?.kill();
-        randomCall = null;
-      };
 
       const getRandomCharacter = () => {
         const available: { character: Character; index: number }[] = [];
@@ -104,10 +85,6 @@ export default function Home() {
           available[Math.floor(Math.random() * available.length)];
         previousIndex = selected.index;
         return selected.character;
-      };
-
-      const getRandomDirection = (): Direction => {
-        return DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
       };
 
       const positionClone = (character: Character, direction: Direction) => {
@@ -127,88 +104,36 @@ export default function Home() {
         });
       };
 
-      const animateCharacter = (
-        character: Character,
-        direction: Direction,
-        onComplete?: () => void,
-      ) => {
+      const animateCharacter = (character: Character, direction: Direction) => {
         if (character.busy || stopped) return;
 
         character.busy = true;
 
         positionClone(character, direction);
 
-        gsap.set(character.track, {
-          xPercent: 0,
-          yPercent: 0,
-        });
+        gsap.set(character.track, { xPercent: 0, yPercent: 0 });
 
         gsap.to(character.track, {
           ...OFFSETS[direction],
           duration: 0.4,
           ease: "power2.inOut",
           onComplete: () => {
-            gsap.set(character.track, {
-              xPercent: 0,
-              yPercent: 0,
-            });
-
-            gsap.set(character.clone, {
-              left: "-105%",
-              top: 0,
-            });
-
+            gsap.set(character.track, { xPercent: 0, yPercent: 0 });
+            gsap.set(character.clone, { left: "-105%", top: 0 });
             character.busy = false;
 
-            if (activeRandom === character) {
-              activeRandom = null;
-            }
-
-            onComplete?.();
-
-            if (hoverQueue.size > 0 && !stopped) {
-              const next = hoverQueue.values().next().value as
-                | Character
-                | undefined;
-
-              if (next) {
-                hoverQueue.delete(next);
-                runHover(next);
-              }
-
-              return;
-            }
-
-            if (!isHovering && !stopped) {
-              scheduleRandom(0.5 + Math.random() * 2);
-            }
+            scheduleRandom(0.5 + Math.random() * 2);
           },
         });
       };
 
-      const runHover = (character: Character) => {
-        if (stopped) return;
-
-        isHovering = true;
-        clearRandomCall();
-
-        if (character.busy) {
-          hoverQueue.add(character);
-          return;
-        }
-
-        animateCharacter(character, "left", () => {
-          isHovering = false;
-        });
-      };
-
       const scheduleRandom = (delay: number) => {
-        if (stopped || isHovering || randomCall) return;
+        if (stopped || randomCall) return;
 
         randomCall = gsap.delayedCall(delay, () => {
           randomCall = null;
 
-          if (stopped || isHovering) return;
+          if (stopped) return;
 
           const character = getRandomCharacter();
 
@@ -217,36 +142,20 @@ export default function Home() {
             return;
           }
 
-          activeRandom = character;
-
-          animateCharacter(character, getRandomDirection());
+          animateCharacter(
+            character,
+            DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
+          );
         });
       };
-
-      const canHover = window.matchMedia(
-        "(hover: hover) and (pointer: fine)",
-      ).matches;
-
-      if (canHover) {
-        characters.forEach((character) => {
-          const handler = () => runHover(character);
-          hoverHandlers.set(character.element, handler);
-          character.element.addEventListener("mouseenter", handler);
-        });
-      }
 
       scheduleRandom(0.5 + Math.random() * 1.5);
 
       return () => {
         stopped = true;
-        clearRandomCall();
+        randomCall?.kill();
 
         characters.forEach((character) => {
-          const handler = hoverHandlers.get(character.element);
-          if (handler) {
-            character.element.removeEventListener("mouseenter", handler);
-          }
-
           gsap.killTweensOf(character.track);
           gsap.killTweensOf(character.clone);
         });
@@ -267,8 +176,8 @@ export default function Home() {
         </div>
       </div>
       <div className="text-animation">
-        <div className="slide-up">text</div>
-        <div className="slide-in">another text</div>
+        <div className="slide-up">Over 15 years of</div>
+        <div className="slide-in">Engineering</div>
       </div>
     </>
   );

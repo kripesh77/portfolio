@@ -123,7 +123,7 @@ const Navbar = () => {
       if (timeline.current === tl) timeline.current = null;
       document.documentElement.classList.remove("nav-links-hidden");
     };
-  }, []);
+  });
 
   function closeMenu() {
     hideLinks();

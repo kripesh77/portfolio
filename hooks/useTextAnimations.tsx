@@ -129,7 +129,12 @@ export function useRevealOnScroll(
       );
 
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: triggerElement, start, end, toggleActions },
+        scrollTrigger: {
+          trigger: triggerElement,
+          start,
+          end,
+          toggleActions,
+        },
       });
 
       const { split, addTweens } = buildReveal(
@@ -212,55 +217,52 @@ export function useTextAnimations(
     toggleActions = "play reverse play reverse",
   } = options;
 
-  useGSAP(
-    () => {
-      const splits: SplitText[] = [];
-      const els: HTMLElement[] = [];
+  useGSAP(() => {
+    const splits: SplitText[] = [];
+    const els: HTMLElement[] = [];
 
-      document
-        .querySelectorAll<HTMLElement>(".text-animation")
-        .forEach((container) => {
-          container
-            .querySelectorAll<HTMLElement>(".slide-up, .slide-in")
-            .forEach((el) => {
-              // A second caller must not re-split — that corrupts the DOM
-              if (el.dataset.textSplit) return;
+    document
+      .querySelectorAll<HTMLElement>(".text-animation")
+      .forEach((container) => {
+        container
+          .querySelectorAll<HTMLElement>(".slide-up, .slide-in")
+          .forEach((el) => {
+            // A second caller must not re-split — that corrupts the DOM
+            if (el.dataset.textSplit) return;
 
-              const cls = (
-                Object.keys(
-                  REVEAL_BY_CLASS,
-                ) as Array<keyof typeof REVEAL_BY_CLASS>
-              ).find((c) => el.classList.contains(c));
-              if (!cls) return;
+            const cls = (
+              Object.keys(REVEAL_BY_CLASS) as Array<
+                keyof typeof REVEAL_BY_CLASS
+              >
+            ).find((c) => el.classList.contains(c));
+            if (!cls) return;
 
-              el.dataset.textSplit = "true";
-              els.push(el);
+            el.dataset.textSplit = "true";
+            els.push(el);
 
-              const { split, addTweens } = buildReveal(
-                el,
-                REVEAL_BY_CLASS[cls],
-                options,
-              );
+            const { split, addTweens } = buildReveal(
+              el,
+              REVEAL_BY_CLASS[cls],
+              options,
+            );
 
-              const tl = gsap.timeline({
-                scrollTrigger: {
-                  trigger: container,
-                  start,
-                  end,
-                  toggleActions,
-                },
-              });
-              addTweens(tl);
-
-              splits.push(split);
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: container,
+                start,
+                end,
+                toggleActions,
+              },
             });
-        });
+            addTweens(tl);
 
-      return () => {
-        splits.forEach((split) => split.revert());
-        els.forEach((el) => delete el.dataset.textSplit);
-      };
-    },
-    { dependencies: [] },
-  );
+            splits.push(split);
+          });
+      });
+
+    return () => {
+      splits.forEach((split) => split.revert());
+      els.forEach((el) => delete el.dataset.textSplit);
+    };
+  });
 }

@@ -281,6 +281,17 @@ button {
    the hook splits them — same FOUC pattern as .home.
 ========================================================= */
 
+.text-animation {
+  font-family: "Druk";
+  font-size: calc(5 * var(--ds-fluid-unit));
+  line-height: 0.8;
+
+  & .slide-in {
+    color: transparent;
+    -webkit-text-stroke: var(--ds-border-width-strong) var(--ds-color-fg);
+  }
+}
+
 .text-animation .slide-up,
 .text-animation .slide-in {
   visibility: hidden;
@@ -330,6 +341,10 @@ button {
 html.nav-links-hidden .navcontent .char {
   transform: translateY(100%) !important;
   transition: transform 0.2s cubic-bezier(1, 0.01, 0.43, 0.95);
+}
+
+html.nav-links-hidden .navcontent {
+  pointer-events: none;
 }
 
 /* =========================================================
