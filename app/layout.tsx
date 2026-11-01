@@ -19,12 +19,14 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useTextAnimations } from "@/hooks/useTextAnimations";
 
 gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  useTextAnimations();
   useEffect(() => {
     history.scrollRestoration = "manual";
   }, []);

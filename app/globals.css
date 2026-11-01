@@ -275,6 +275,18 @@ button {
 }
 
 /* =========================================================
+   TEXT ANIMATIONS — markup-driven reveals (useTextAnimations).
+   .text-animation scopes; each CHILD declares its spec via
+   .slide-up / .slide-in. Marked children stay hidden until
+   the hook splits them — same FOUC pattern as .home.
+========================================================= */
+
+.text-animation .slide-up,
+.text-animation .slide-in {
+  visibility: hidden;
+}
+
+/* =========================================================
    NAVIGATION CONTENT
 ========================================================= */
 

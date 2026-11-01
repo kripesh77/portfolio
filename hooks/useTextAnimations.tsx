@@ -186,3 +186,81 @@ export function playReveal(
     },
   };
 }
+
+/* =========================================================
+   Declarative reveals — a .text-animation container scopes,
+   each CHILD declares its spec by class:
+     <div class="text-animation">
+       <div class="slide-up">…</div>
+       <div class="slide-in">…</div>
+     </div>
+   Every marked child reveals on scroll with the page.tsx
+   defaults. Call once PER PAGE (it scans the DOM on mount).
+========================================================= */
+
+const REVEAL_BY_CLASS = {
+  "slide-up": "slideUp",
+  "slide-in": "slideIn",
+} as const satisfies Record<string, RevealName>;
+
+export function useTextAnimations(
+  options: Omit<ScrollOptions, "trigger"> = {},
+) {
+  const {
+    start = "top bottom",
+    end = "bottom top",
+    toggleActions = "play reverse play reverse",
+  } = options;
+
+  useGSAP(
+    () => {
+      const splits: SplitText[] = [];
+      const els: HTMLElement[] = [];
+
+      document
+        .querySelectorAll<HTMLElement>(".text-animation")
+        .forEach((container) => {
+          container
+            .querySelectorAll<HTMLElement>(".slide-up, .slide-in")
+            .forEach((el) => {
+              // A second caller must not re-split — that corrupts the DOM
+              if (el.dataset.textSplit) return;
+
+              const cls = (
+                Object.keys(
+                  REVEAL_BY_CLASS,
+                ) as Array<keyof typeof REVEAL_BY_CLASS>
+              ).find((c) => el.classList.contains(c));
+              if (!cls) return;
+
+              el.dataset.textSplit = "true";
+              els.push(el);
+
+              const { split, addTweens } = buildReveal(
+                el,
+                REVEAL_BY_CLASS[cls],
+                options,
+              );
+
+              const tl = gsap.timeline({
+                scrollTrigger: {
+                  trigger: container,
+                  start,
+                  end,
+                  toggleActions,
+                },
+              });
+              addTweens(tl);
+
+              splits.push(split);
+            });
+        });
+
+      return () => {
+        splits.forEach((split) => split.revert());
+        els.forEach((el) => delete el.dataset.textSplit);
+      };
+    },
+    { dependencies: [] },
+  );
+}

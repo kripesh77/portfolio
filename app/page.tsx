@@ -256,16 +256,20 @@ export default function Home() {
   );
 
   return (
-    <div className="home_container">
-      <div className="home pt-2" ref={container}>
-        <div className="sr-only">KRIPESH GHIMIRE</div>
-        <div aria-hidden="true">
-          <h1 ref={headingRef}>KRIPESH GHIMIRE</h1>
-          <p ref={paragraphRef}>FULL-STACK DEVELOPER</p>
+    <>
+      <div className="home_container">
+        <div className="home pt-2" ref={container}>
+          <div className="sr-only">KRIPESH GHIMIRE</div>
+          <div aria-hidden="true">
+            <h1 ref={headingRef}>KRIPESH GHIMIRE</h1>
+            <p ref={paragraphRef}>FULL-STACK DEVELOPER</p>
+          </div>
         </div>
-
-        <div>hi</div>
       </div>
-    </div>
+      <div className="text-animation">
+        <div className="slide-up">text</div>
+        <div className="slide-in">another text</div>
+      </div>
+    </>
   );
 }
