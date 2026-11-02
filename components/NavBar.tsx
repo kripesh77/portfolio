@@ -205,7 +205,7 @@ const Navbar = () => {
         <button
           type="button"
           className={`hamburger absolute top-0 right-0 transition-transform duration-500 p-4 ${
-            isOpen ? "translate-x-[120%]" : "translate-x-0"
+            isOpen ? "translate-x-[140%]" : "translate-x-0"
           }`}
           onClick={handleClick}
           aria-label={isOpen ? "Close menu" : "Open menu"}

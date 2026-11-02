@@ -18,6 +18,7 @@ type RevealTarget = HTMLElement | HTMLElement[] | NodeListOf<Element>;
 
 type TimingOptions = {
   duration?: number;
+  delay?: number;
   stagger?: number;
   ease?: string;
 };
@@ -26,27 +27,35 @@ type ScrollOptions = TimingOptions & {
   start?: string;
   end?: string;
   toggleActions?: string;
-  trigger?: TriggerType; // Accepts a RefObject, CSS selector string, or HTMLElement
+  trigger?: TriggerType;
 };
 
-// Resolves custom trigger option or falls back to the target element itself
+// Resolve custom trigger or fall back to target
 const resolveTrigger = (
   trigger?: TriggerType,
   fallback?: HTMLElement | null,
 ) => {
   if (!trigger) return fallback;
+
   if (typeof trigger === "string" || trigger instanceof HTMLElement) {
     return trigger;
   }
+
   return trigger.current ?? fallback;
 };
 
 /* =========================================================
-   SPECS — the single source of truth for WHAT each reveal is.
-   Mask and word-targets are a load-bearing pair: with
-   mask: "chars" every char is wrapped in a .char-mask element,
-   so the chars must be queried — animating word.children would
-   move the masks and break the clipping.
+   REVEAL SPECS
+
+   slideUp:
+   - Splits text into words
+   - Animates word children
+   - Uses stagger
+
+   slideIn:
+   - Does NOT split into characters
+   - Animates the entire element
+   - No stagger
 ========================================================= */
 
 const SPECS = {
@@ -61,23 +70,23 @@ const SPECS = {
     targets: (word: Element) =>
       Array.from(word.querySelectorAll<HTMLElement>(".char")),
   },
-} as const satisfies Record<
-  string,
-  {
-    mask: "words" | "chars";
-    from: { yPercent?: number; xPercent?: number };
-    targets: (word: Element) => Element[];
-  }
->;
+} as const;
 
 type RevealName = keyof typeof SPECS;
 
-// Shared core: splits once, sets visibility, hands back the timeline glue.
-// Timing defaults live here so every mode resolves them the same way.
+/* =========================================================
+   SHARED REVEAL ENGINE
+========================================================= */
+
 const buildReveal = (
   target: RevealTarget,
   name: RevealName,
-  { duration = 1, stagger = 0.05, ease = "customEase" }: TimingOptions = {},
+  {
+    duration = 1,
+    stagger = 0.05,
+    delay = 0,
+    ease = "customEase",
+  }: TimingOptions = {},
 ) => {
   const spec = SPECS[name];
 
@@ -87,25 +96,46 @@ const buildReveal = (
     charsClass: "char",
   });
 
-  split.chars.forEach((char, i) => {
-    (char as HTMLElement).style.setProperty("--i", String(i));
-  });
-
   gsap.set(target, { visibility: "visible" });
 
-  // All words animate in parallel (each tween added at position 0);
-  // only the chars within a word stagger.
   const addTweens = (tl: gsap.core.Timeline) => {
+    if (name === "slideIn") {
+      tl.from(
+        split.chars,
+        {
+          ...spec.from,
+          duration,
+          delay,
+          ease,
+        },
+        0,
+      );
+
+      return;
+    }
+
     split.words.forEach((word) => {
-      tl.from(spec.targets(word), { ...spec.from, stagger, duration, ease }, 0);
+      tl.from(
+        spec.targets(word),
+        {
+          ...spec.from,
+          stagger,
+          delay,
+          duration,
+          ease,
+        },
+        0,
+      );
     });
   };
 
   return { split, addTweens };
 };
 
-/** Scroll-triggered reveal — the engine owns the timeline and its
- *  ScrollTrigger. Returns the split (e.g. to reach .chars). */
+/* =========================================================
+   SCROLL-TRIGGERED REVEAL
+========================================================= */
+
 export function useRevealOnScroll(
   targetRef: RefObject<RevealTarget | null>,
   name: RevealName,
@@ -129,6 +159,12 @@ export function useRevealOnScroll(
         targetRef.current as HTMLElement,
       );
 
+      const { split, addTweens } = buildReveal(
+        targetRef.current,
+        name,
+        options,
+      );
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerElement,
@@ -136,19 +172,15 @@ export function useRevealOnScroll(
           end,
           toggleActions,
         },
+        ...options,
       });
 
-      const { split, addTweens } = buildReveal(
-        targetRef.current,
-        name,
-        options,
-      );
       addTweens(tl);
 
       setSplitInstance(split);
 
       return () => {
-        split.revert();
+        split?.revert();
       };
     },
     { dependencies: [targetRef] },
@@ -157,21 +189,32 @@ export function useRevealOnScroll(
   return splitInstance;
 }
 
-/** Timeline-attach reveal — the CALLER owns the timeline, so the reveal
- *  plays/reverses in sync with whatever else sits on it. */
+/* =========================================================
+   TIMELINE-ATTACHED REVEAL
+
+   The caller owns the timeline.
+========================================================= */
+
 export function attachReveal(
   tl: gsap.core.Timeline,
   target: RevealTarget,
   name: RevealName,
   options: TimingOptions = {},
-): SplitText {
+): SplitText | null {
   const { split, addTweens } = buildReveal(target, name, options);
+
   addTweens(tl);
+
   return split;
 }
 
-/** Direct reveal — splits and plays immediately; call it when your event
- *  fires. Keep the handle to reverse later and revert on teardown. */
+/* =========================================================
+   DIRECT REVEAL
+
+   Plays immediately.
+   Supports reverse and revert.
+========================================================= */
+
 export function playReveal(
   target: RevealTarget,
   name: RevealName,
@@ -180,28 +223,33 @@ export function playReveal(
   const { split, addTweens } = buildReveal(target, name, options);
 
   const timeline = gsap.timeline();
+
   addTweens(timeline);
 
   return {
     split,
     timeline,
+
     reverse: () => timeline.reverse(),
+
     revert: () => {
-      split.revert();
+      split?.revert();
       timeline.kill();
     },
   };
 }
 
 /* =========================================================
-   Declarative reveals — a .text-animation container scopes,
-   each CHILD declares its spec by class:
-     <div class="text-animation">
-       <div class="slide-up">…</div>
-       <div class="slide-in">…</div>
-     </div>
-   Every marked child reveals on scroll with the page.tsx
-   defaults. Call once PER PAGE (it scans the DOM on mount).
+   DECLARATIVE REVEALS
+
+   Usage:
+
+   <div className="text-animation">
+     <div className="slide-up">Slide up text</div>
+     <div className="slide-in">Slide in text</div>
+   </div>
+
+   Call once per page.
 ========================================================= */
 
 const REVEAL_BY_CLASS = {
@@ -213,6 +261,7 @@ export function useTextAnimations(
   options: Omit<ScrollOptions, "trigger"> = {},
 ) {
   const pathname = usePathname();
+
   const frameRef = useRef<number | null>(null);
 
   const {
@@ -256,7 +305,10 @@ export function useTextAnimations(
                 });
 
                 addTweens(tl);
-                splits.push(split);
+
+                if (split) {
+                  splits.push(split);
+                }
               });
           });
 

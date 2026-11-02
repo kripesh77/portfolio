@@ -20,6 +20,7 @@ import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useTextAnimations } from "@/hooks/useTextAnimations";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 
@@ -38,38 +39,40 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full">
-        <Navbar />
-        <ViewTransitionsWrapper>
-          <div className="logo-overlay">
-            <div className="logo-blend">
-              <NoSameRouteTransitionLink
-                href="/"
-                className="logo-link"
-                aria-label="Home"
-              >
-                <Logo />
-              </NoSameRouteTransitionLink>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <Navbar />
+          <ViewTransitionsWrapper>
+            <div className="logo-overlay">
+              <div className="logo-blend">
+                <NoSameRouteTransitionLink
+                  href="/"
+                  className="logo-link"
+                  aria-label="Home"
+                >
+                  <Logo />
+                </NoSameRouteTransitionLink>
+              </div>
             </div>
-          </div>
 
-          <NavContent />
+            <NavContent />
 
-          <div className="main-shell">
-            <ReactLenis
-              options={{ autoRaf: false }}
-              className="main-scroll"
-              ref={(handle) => {
-                lenisRef.current = handle?.lenis ?? null;
-              }}
-            >
-              <ScrollReset />
-              <LenisGsapSync />
-              <DataEffects />
-              <main>{children}</main>
-              <Footer />
-            </ReactLenis>
-          </div>
-        </ViewTransitionsWrapper>
+            <div className="main-shell">
+              <ReactLenis
+                options={{ autoRaf: false }}
+                className="main-scroll"
+                ref={(handle) => {
+                  lenisRef.current = handle?.lenis ?? null;
+                }}
+              >
+                <ScrollReset />
+                <LenisGsapSync />
+                <DataEffects />
+                <main>{children}</main>
+                <Footer />
+              </ReactLenis>
+            </div>
+          </ViewTransitionsWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

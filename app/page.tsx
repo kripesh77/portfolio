@@ -33,6 +33,7 @@ export default function Home() {
   });
   const pSplit = useRevealOnScroll(paragraphRef, "slideIn", {
     trigger: paragraphRef,
+    duration: 1.2,
   });
 
   // Random character loop — one char at a time drifts out in a random
@@ -176,8 +177,8 @@ export default function Home() {
         </div>
       </div>
       <div className="text-animation">
-        <div className="slide-up">Over 15 years of</div>
-        <div className="slide-in">Engineering</div>
+        <div className="slide-up">Over 2</div>
+        <div className="slide-in">years experience</div>
       </div>
     </>
   );
