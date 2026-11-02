@@ -2,10 +2,11 @@
 
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useState, RefObject } from "react";
+import { useState, RefObject, useRef } from "react";
 import { SplitText } from "gsap/SplitText";
 import { CustomEase } from "gsap/CustomEase";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePathname } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger, CustomEase, SplitText);
 
@@ -211,58 +212,70 @@ const REVEAL_BY_CLASS = {
 export function useTextAnimations(
   options: Omit<ScrollOptions, "trigger"> = {},
 ) {
+  const pathname = usePathname();
+  const frameRef = useRef<number | null>(null);
+
   const {
     start = "top bottom",
     end = "bottom top",
     toggleActions = "play reverse play reverse",
   } = options;
 
-  useGSAP(() => {
-    const splits: SplitText[] = [];
-    const els: HTMLElement[] = [];
+  useGSAP(
+    () => {
+      const splits: SplitText[] = [];
 
-    document
-      .querySelectorAll<HTMLElement>(".text-animation")
-      .forEach((container) => {
-        container
-          .querySelectorAll<HTMLElement>(".slide-up, .slide-in")
-          .forEach((el) => {
-            // A second caller must not re-split — that corrupts the DOM
-            if (el.dataset.textSplit) return;
+      const initialize = () => {
+        document
+          .querySelectorAll<HTMLElement>(".text-animation")
+          .forEach((container) => {
+            container
+              .querySelectorAll<HTMLElement>(".slide-up, .slide-in")
+              .forEach((el) => {
+                const cls = (
+                  Object.keys(REVEAL_BY_CLASS) as Array<
+                    keyof typeof REVEAL_BY_CLASS
+                  >
+                ).find((c) => el.classList.contains(c));
 
-            const cls = (
-              Object.keys(REVEAL_BY_CLASS) as Array<
-                keyof typeof REVEAL_BY_CLASS
-              >
-            ).find((c) => el.classList.contains(c));
-            if (!cls) return;
+                if (!cls) return;
 
-            el.dataset.textSplit = "true";
-            els.push(el);
+                const { split, addTweens } = buildReveal(
+                  el,
+                  REVEAL_BY_CLASS[cls],
+                  options,
+                );
 
-            const { split, addTweens } = buildReveal(
-              el,
-              REVEAL_BY_CLASS[cls],
-              options,
-            );
+                const tl = gsap.timeline({
+                  scrollTrigger: {
+                    trigger: container,
+                    start,
+                    end,
+                    toggleActions,
+                  },
+                });
 
-            const tl = gsap.timeline({
-              scrollTrigger: {
-                trigger: container,
-                start,
-                end,
-                toggleActions,
-              },
-            });
-            addTweens(tl);
-
-            splits.push(split);
+                addTweens(tl);
+                splits.push(split);
+              });
           });
-      });
 
-    return () => {
-      splits.forEach((split) => split.revert());
-      els.forEach((el) => delete el.dataset.textSplit);
-    };
-  });
+        ScrollTrigger.refresh();
+      };
+
+      frameRef.current = requestAnimationFrame(initialize);
+
+      return () => {
+        if (frameRef.current !== null) {
+          cancelAnimationFrame(frameRef.current);
+        }
+
+        splits.forEach((split) => split.revert());
+      };
+    },
+    {
+      dependencies: [pathname],
+      revertOnUpdate: true,
+    },
+  );
 }
